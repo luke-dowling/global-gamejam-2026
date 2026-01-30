@@ -1,7 +1,7 @@
-import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
+import UIElement from "../components/ui-element";
 
 export default function Start() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +22,7 @@ export default function Start() {
   });
 
   return (
-    <Html position={[0, 0, 0]} fullscreen>
+    <UIElement>
       <h1 className="text-center text-9xl py-30 tracking-[.3em] font-black text-white drop-shadow-lg">
         Title of Game
       </h1>
@@ -31,6 +31,6 @@ export default function Start() {
         <p className="text-3xl tracking-[.3em] uppercase">Menu Option 2</p>
         <p className="text-3xl tracking-[.3em] uppercase">Menu Option 3</p>
       </div>
-    </Html>
+    </UIElement>
   );
 }
