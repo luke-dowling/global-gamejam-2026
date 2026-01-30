@@ -4,7 +4,6 @@ import Controls from "./components/controls";
 import SceneManager from "./components/scene-manager";
 import { SceneManagerProvider } from "./components/scene-manager/use-scene-manager";
 import { GameProvider } from "./hooks/use-game";
-import UI from "./ui";
 
 export default function App() {
   return (
@@ -33,7 +32,6 @@ export default function App() {
           shadow-camera-top={10}
           shadow-camera-bottom={-10}
         />
-        <UI></UI>
         <GameProvider>
           <SceneManagerProvider>
             <Controls />

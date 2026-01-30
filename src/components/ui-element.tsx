@@ -15,7 +15,6 @@ export default function UIElement({ children }: Props) {
 
   return (
     <Html
-      occlude={true}
       style={{
         transform: `scale(${scale}) translate(-50%, -50%)`,
         transformOrigin: "top left",
