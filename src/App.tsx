@@ -1,21 +1,11 @@
 import { Canvas } from "@react-three/fiber";
-import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import Menu from "./Scene/Menu";
-import { useSceneManager } from "./components/scene-manager/use-scene-manager";
+import Controls from "./components/controls";
 import SceneManager from "./components/scene-manager";
+import { SceneManagerProvider } from "./components/scene-manager/use-scene-manager";
 
 export default function App() {
-  const { switchScene } = useSceneManager();
-
-  // switch scenes every second
-  useEffect(() => {
-    const interval = setInterval(() => {
-      switchScene((prev) => (prev === "test" ? "test2" : "test"));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [switchScene]);
-
   return (
     <Menu>
       <div id="canvas-container">
@@ -44,7 +34,10 @@ export default function App() {
             shadow-camera-top={10}
             shadow-camera-bottom={-10}
           />
-          <SceneManager />
+          <SceneManagerProvider>
+            <Controls />
+            <SceneManager />
+          </SceneManagerProvider>
         </Canvas>
       </div>
     </Menu>
