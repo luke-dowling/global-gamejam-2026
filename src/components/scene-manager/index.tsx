@@ -1,10 +1,10 @@
-import TestScene from "../test-scene";
-import TestSceneTwo from "../test-scene-two";
+import Game from "../../scene/game";
+import Start from "../../scene/start";
 import { useSceneManager } from "./use-scene-manager";
 
 const scenes = {
-  test: TestScene,
-  test2: TestSceneTwo,
+  start: Start,
+  game: Game,
 };
 
 export type SceneName = keyof typeof scenes;

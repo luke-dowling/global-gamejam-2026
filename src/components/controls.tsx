@@ -2,16 +2,16 @@ import { useEffect } from "react";
 import { useSceneManager } from "./scene-manager/use-scene-manager";
 
 export default function Controls() {
-  const { switchScene } = useSceneManager();
+  const { activeSceneName, switchScene } = useSceneManager();
 
   // TODO: remove this testing code once there is a proper scene switch logic
   useEffect(() => {
     // set up key listener to "s" to switch scenes for testing
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "1") {
-        switchScene("test");
-      } else if (event.key === "2") {
-        switchScene("test2");
+      if (activeSceneName === "start") {
+        if (event.key === " ") {
+          switchScene("game");
+        }
       }
     };
 
@@ -19,7 +19,7 @@ export default function Controls() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [switchScene]);
+  }, [activeSceneName, switchScene]);
 
   return null;
 }

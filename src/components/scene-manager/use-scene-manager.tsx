@@ -15,7 +15,7 @@ export function SceneManagerProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [activeSceneName, setActiveSceneName] = useState<SceneName>("test");
+  const [activeSceneName, setActiveSceneName] = useState<SceneName>("start");
 
   return (
     <SceneManagerContext.Provider
