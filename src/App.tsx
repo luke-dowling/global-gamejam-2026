@@ -1,9 +1,11 @@
 import { createRoot } from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
+import Menu from "./Scene/Menu"
 import Player from "./player";
 
 export default function App() {
   return (
+  <Menu>
     <div id="canvas-container">
       <Canvas
         shadows
@@ -33,7 +35,8 @@ export default function App() {
         <Player />
       </Canvas>
     </div>
+  </Menu>
   );
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(<App />)
