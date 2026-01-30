@@ -10,8 +10,9 @@ export default function UI() {
           left: 0,
           pointerEvents: "none",
         }}
+        className="border rounded-lg bg-white text-blue-500"
       >
-        abc
+        Level: over 9000
       </div>
     </Html>
   );
