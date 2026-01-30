@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
+import Player from "./player";
 
 export default function App() {
   return (
@@ -29,10 +30,7 @@ export default function App() {
           shadow-camera-top={10}
           shadow-camera-bottom={-10}
         />
-        <mesh>
-          <boxGeometry />
-          <meshStandardMaterial color="hotpink" />
-        </mesh>
+        <Player />
       </Canvas>
     </div>
   );
