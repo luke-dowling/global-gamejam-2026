@@ -1,4 +1,4 @@
-# GLobal Gamejam 2026
+# Global Gamejam 2026
 
 This game is the submission for the Global Gamejam 2026 event from the team METTelhead from InnoGames.
 
