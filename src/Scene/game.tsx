@@ -6,6 +6,12 @@ export default function Game() {
     <>
       <UI />
       <Player />
+
+      {/* test object */}
+      <mesh position={[0, 1, 0]} receiveShadow>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="lightblue" />
+      </mesh>
     </>
   );
 }

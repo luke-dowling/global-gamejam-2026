@@ -6,12 +6,12 @@ export default function Player() {
   const { playerPosition, movePlayer } = useGame();
 
   const handleMove = useCallback(
-    (dx: number, dz: number) => {
+    (dx: number, dy: number) => {
       const speed = 0.1;
       movePlayer({
         x: playerPosition.x + dx * speed,
-        y: playerPosition.y,
-        z: playerPosition.z + dz * speed,
+        y: playerPosition.y - dy * speed,
+        z: playerPosition.z,
       });
     },
     [playerPosition, movePlayer],
