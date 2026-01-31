@@ -1,47 +1,47 @@
-import { createContext, useContext, useRef, useState, useEffect } from "react"
-import * as THREE from "three"
-import { useSceneManager } from "../components/scene-manager/use-scene-manager"
+import { createContext, useContext, useRef, useState, useEffect } from "react";
+import * as THREE from "three";
+import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 
 interface PlayerPosition {
-  x: number
-  y: number
-  z: number
+  x: number;
+  y: number;
+  z: number;
 }
 
-export const MAX_PLAYER_HEALTH = 5
+export const MAX_PLAYER_HEALTH = 5;
 
 interface GameContextType {
-  playerPosition: PlayerPosition
-  movePlayer: (position: PlayerPosition) => void
-  obstacleRefs: React.MutableRefObject<THREE.Object3D[]>
-  speedMultiplier: number
-  setSpeedMultiplier: (multiplier: number) => void
-  playerHealth: number
-  takePlayerDamage: () => void
+  playerPosition: PlayerPosition;
+  movePlayer: (position: PlayerPosition) => void;
+  obstacleRefs: React.MutableRefObject<THREE.Object3D[]>;
+  speedMultiplier: number;
+  setSpeedMultiplier: (multiplier: number) => void;
+  playerHealth: number;
+  takePlayerDamage: () => void;
 }
 
-const GameContext = createContext<GameContextType | undefined>(undefined)
+const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
-  const { switchScene } = useSceneManager()
+  const { switchScene } = useSceneManager();
   const [playerPosition, setPlayerPosition] = useState<PlayerPosition>({
     x: 0,
     y: 0,
     z: 0,
-  })
-  const [speedMultiplier, setSpeedMultiplier] = useState(1)
-  const obstacleRefs = useRef<THREE.Object3D[]>([])
+  });
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const obstacleRefs = useRef<THREE.Object3D[]>([]);
 
-  const [playerHealth, setPlayerHealth] = useState<number>(3)
+  const [playerHealth, setPlayerHealth] = useState<number>(3);
   const takePlayerDamage = () => {
-    setPlayerHealth(Math.max(0, playerHealth - 1))
-  }
+    setPlayerHealth(Math.max(0, playerHealth - 1));
+  };
 
   useEffect(() => {
     if (playerHealth <= 0) {
-      switchScene("gameOver")
+      switchScene("gameOver");
     }
-  }, [playerHealth, switchScene])
+  }, [playerHealth, switchScene]);
 
   return (
     <GameContext.Provider
@@ -57,14 +57,14 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     >
       {children}
     </GameContext.Provider>
-  )
-}
+  );
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useGame() {
-  const context = useContext(GameContext)
+  const context = useContext(GameContext);
   if (context === undefined) {
-    throw new Error("useGame must be used within a GameProvider")
+    throw new Error("useGame must be used within a GameProvider");
   }
-  return context
+  return context;
 }

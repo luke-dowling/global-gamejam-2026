@@ -1,15 +1,15 @@
-import { useTexture } from "@react-three/drei"
-import { useFrame } from "@react-three/fiber"
-import { useRef } from "react"
-import * as THREE from "three"
-import { useGame } from "../hooks/use-game"
-import { followPlayer, type MovementBehavior } from "../utils/movement"
-import { isColliding } from "../utils/collision"
+import { useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import * as THREE from "three";
+import { useGame } from "../hooks/use-game";
+import { followPlayer, type MovementBehavior } from "../utils/movement";
+import { isColliding } from "../utils/collision";
 
 interface EnemyProps {
-  position: [number, number]
-  speed: number
-  movementBehavior: MovementBehavior
+  position: [number, number];
+  speed: number;
+  movementBehavior: MovementBehavior;
 }
 
 export default function Enemy({
@@ -17,30 +17,30 @@ export default function Enemy({
   speed,
   movementBehavior = followPlayer,
 }: EnemyProps) {
-  const { playerPosition, takePlayerDamage } = useGame()
-  const enemyMeshRef = useRef<THREE.Mesh>(null!)
-  const playerMeshRef = useRef<THREE.Mesh>(null!)
-  const lastDamageTimeRef = useRef<number>(0)
+  const { playerPosition, takePlayerDamage } = useGame();
+  const enemyMeshRef = useRef<THREE.Mesh>(null!);
+  const playerMeshRef = useRef<THREE.Mesh>(null!);
+  const lastDamageTimeRef = useRef<number>(0);
   const enemyTexture = useTexture("/src/assets/enemy.png", (texture) => {
-    texture.magFilter = THREE.NearestFilter
-    texture.minFilter = THREE.NearestFilter
-  })
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+  });
 
   useFrame(({ scene }, delta) => {
-    if (!enemyMeshRef.current) return
+    if (!enemyMeshRef.current) return;
 
     movementBehavior({
       currentPosition: enemyMeshRef.current.position,
       playerPosition,
       delta,
       speed,
-    })
+    });
 
     // Find player mesh if we haven't already
     if (!playerMeshRef.current) {
-      const playerMesh = scene.getObjectByName("player-mesh")
+      const playerMesh = scene.getObjectByName("player-mesh");
       if (playerMesh instanceof THREE.Mesh) {
-        playerMeshRef.current = playerMesh
+        playerMeshRef.current = playerMesh;
       }
     }
 
@@ -49,19 +49,19 @@ export default function Enemy({
       playerMeshRef.current &&
       isColliding(enemyMeshRef.current, playerMeshRef.current)
     ) {
-      const currentTime = Date.now()
+      const currentTime = Date.now();
       // Only deal damage once per second to avoid multiple damage per frame
       if (currentTime - lastDamageTimeRef.current > 1000) {
-        takePlayerDamage()
-        lastDamageTimeRef.current = currentTime
+        takePlayerDamage();
+        lastDamageTimeRef.current = currentTime;
       }
     }
-  })
+  });
 
   return (
     <mesh ref={enemyMeshRef} position={[position[0], position[1], 0]}>
       <planeGeometry args={[1, 1]} />
-      <meshBasicMaterial map={enemyTexture} transparent color='#ff4444' />
+      <meshBasicMaterial map={enemyTexture} transparent color="#ff4444" />
     </mesh>
-  )
+  );
 }

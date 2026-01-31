@@ -7,7 +7,7 @@ interface SceneManagerContextType {
 }
 
 const SceneManagerContext = createContext<SceneManagerContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export function SceneManagerProvider({

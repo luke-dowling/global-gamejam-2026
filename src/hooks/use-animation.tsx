@@ -19,7 +19,7 @@ export type Animation = Frame[];
 
 export function useAnimation(
   spriteSheet: SpriteSheetData,
-  initialAnimation: Animation,
+  initialAnimation: Animation
 ) {
   const [activeAnimation, setActiveAnimation] =
     useState<Animation>(initialAnimation);
@@ -48,7 +48,7 @@ export function useAnimation(
     if (texture) {
       texture.offset.set(
         currentFrame.x / spriteSheet.cols,
-        1 - (currentFrame.y + 1) / spriteSheet.rows,
+        1 - (currentFrame.y + 1) / spriteSheet.rows
       );
     }
   };

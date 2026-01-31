@@ -7,7 +7,7 @@ interface LevelManagerContextType {
 }
 
 const LevelManagerContext = createContext<LevelManagerContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export function LevelManagerProvider({

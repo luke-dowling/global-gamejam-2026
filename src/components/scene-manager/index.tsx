@@ -13,18 +13,17 @@ const scenes = {
   gameOver: GameOver,
 };
 
+const audio = new Audio(mainTheme);
+
 export type SceneName = keyof typeof scenes;
 
 export default function SceneManager() {
   const { activeSceneName } = useSceneManager();
 
-  // the music
-  const audioRef = useRef<HTMLAudioElement>(new Audio(mainTheme));
+  const audioRef = useRef<HTMLAudioElement>(audio);
 
   useEffect(() => {
     const audio = audioRef.current;
-    audio.volume = 0.6;
-    audio.loop = true;
 
     audio.play().catch((error) => {
       console.error("Failed to play background music:", error);
