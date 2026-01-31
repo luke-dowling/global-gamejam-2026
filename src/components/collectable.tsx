@@ -1,12 +1,14 @@
 import { useCollectable } from "../hooks/use-collectable";
 
 export interface CollectableProps {
-  position?: [number, number, number];
-  onCollect?: () => void;
+  position: [number, number];
+  color: string;
+  onCollect: () => void;
 }
 
 export default function Collectable({
-  position = [0, 1, 0],
+  position,
+  color,
   onCollect,
 }: CollectableProps) {
   const { meshRef, isCollected } = useCollectable({
@@ -21,11 +23,11 @@ export default function Collectable({
   }
 
   return (
-    <mesh ref={meshRef} position={position} castShadow>
+    <mesh ref={meshRef} position={[position[0], position[1], 0]}>
       <boxGeometry args={[0.5, 0.5, 0.5]} />
       <meshStandardMaterial
-        color="#FFD700"
-        emissive="#FFA500"
+        color={color}
+        emissive={color}
         emissiveIntensity={0.5}
         metalness={0.8}
         roughness={0.2}

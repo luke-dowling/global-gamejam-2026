@@ -1,7 +1,6 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { fleeFromPlayer } from "../../../utils/movement";
-import Collectable from "../../collectable";
 import SpeedUp from "../../collectables/speed-up";
 import Enemy from "../../enemy";
 import Obstacle from "../../obstacle";
@@ -30,11 +29,9 @@ export default function Level2() {
       <Obstacle position={[-8, -8]} size={[2, 2]} color="#ffd43b" />
       <Obstacle position={[8, -8]} size={[2, 2]} color="#f783ac" />
 
-      <Collectable position={[5, 5, 0]} />
-      <Collectable position={[-5, 5, 0]} />
-      <Collectable position={[5, -5, 0]} />
-      <Collectable position={[-5, -5, 0]} />
-      <SpeedUp position={[10, 10, 0]} duration={5} speedMultiplier={2.5} />
+      <SpeedUp position={[10, 10]} duration={5} speedMultiplier={2.5} />
+      <SpeedUp position={[-10, -10]} duration={4} speedMultiplier={3} />
+      <SpeedUp position={[0, -12]} duration={6} speedMultiplier={2} />
 
       <Enemy position={[10, -10]} speed={2} movementBehavior={fleeFromPlayer} />
       <Enemy position={[-10, 10]} speed={2} movementBehavior={fleeFromPlayer} />
