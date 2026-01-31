@@ -7,7 +7,7 @@ interface PlayerPosition {
   z: number;
 }
 
-export const MAX_PLAYER_HEALTH = 3;
+export const MAX_PLAYER_HEALTH = 5;
 
 interface GameContextType {
   playerPosition: PlayerPosition;
