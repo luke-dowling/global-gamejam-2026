@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
+import * as THREE from "three";
 
 interface PlayerPosition {
   x: number;
@@ -9,6 +10,7 @@ interface PlayerPosition {
 interface GameContextType {
   playerPosition: PlayerPosition;
   movePlayer: (position: PlayerPosition) => void;
+  obstacleRefs: React.MutableRefObject<THREE.Object3D[]>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -19,10 +21,11 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     y: 0,
     z: 0,
   });
+  const obstacleRefs = useRef<THREE.Object3D[]>([]);
 
   return (
     <GameContext.Provider
-      value={{ playerPosition, movePlayer: setPlayerPosition }}
+      value={{ playerPosition, movePlayer: setPlayerPosition, obstacleRefs }}
     >
       {children}
     </GameContext.Provider>

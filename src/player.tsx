@@ -1,15 +1,17 @@
-import { PerspectiveCamera, useTexture } from "@react-three/drei";
+import { OrthographicCamera, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useControls } from "./hooks/use-controls";
 import { useGame } from "./hooks/use-game";
 import UI from "./ui";
+import { isColliding } from "./utils/collision";
 
 export default function Player() {
-  const { playerPosition, movePlayer } = useGame();
+  const { playerPosition, movePlayer, obstacleRefs } = useGame();
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const velocityRef = useRef(velocity);
+  const playerMeshRef = useRef<THREE.Mesh>(null!);
   const characterTexture = useTexture("/src/assets/player.png", (texture) => {
     texture.magFilter = THREE.NearestFilter;
     texture.minFilter = THREE.NearestFilter;
@@ -67,29 +69,55 @@ export default function Player() {
       vx = vx / magnitude;
       vy = vy / magnitude;
 
-      movePlayer({
+      const newPos = {
         x: playerPosition.x + vx * speed * delta,
         y: playerPosition.y - vy * speed * delta,
         z: playerPosition.z,
-      });
+      };
+
+      // Temporarily move player to check collision
+      if (playerMeshRef.current) {
+        const originalPos = playerMeshRef.current.position.clone();
+        playerMeshRef.current.position.set(newPos.x, newPos.y, newPos.z);
+
+        // Check collision with all obstacles
+        let hasCollision = false;
+        for (const obstacle of obstacleRefs.current) {
+          if (obstacle && isColliding(playerMeshRef.current, obstacle)) {
+            hasCollision = true;
+            break;
+          }
+        }
+
+        // Revert position
+        playerMeshRef.current.position.copy(originalPos);
+
+        // Only move if no collision
+        if (!hasCollision) {
+          movePlayer(newPos);
+        }
+      } else {
+        movePlayer(newPos);
+      }
     }
   });
 
   return (
     <>
-      <mesh position={[playerPosition.x, playerPosition.y, playerPosition.z]}>
+      <mesh
+        ref={playerMeshRef}
+        position={[playerPosition.x, playerPosition.y, playerPosition.z]}
+      >
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial map={characterTexture} transparent />
       </mesh>
-      <PerspectiveCamera
+      <OrthographicCamera
         makeDefault
-        position={[playerPosition.x, playerPosition.y, playerPosition.z + 6]}
-        fov={45}
-        near={0.1}
-        far={1000}
+        position={[playerPosition.x, playerPosition.y, playerPosition.z + 1]}
+        zoom={100}
       >
         <UI />
-      </PerspectiveCamera>
+      </OrthographicCamera>
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import Obstacle from "../components/obstacle";
 import Player from "../player";
 
 export default function Game() {
@@ -19,6 +20,12 @@ export default function Game() {
         <planeGeometry args={[32, 32]} />
         <meshBasicMaterial map={floorTexture} />
       </mesh>
+
+      <Obstacle position={[3, 0]} size={[2, 2]} color="#ff6b6b" />
+      <Obstacle position={[-4, 2]} size={[1.5, 1.5]} color="#51cf66" />
+      <Obstacle position={[0, -3]} size={[3, 1]} color="#339af0" />
+      <Obstacle position={[-2, -5]} size={[1, 2]} color="#ffd43b" />
+      <Obstacle position={[5, -2]} size={[2, 2]} color="#f783ac" />
 
       <Player />
     </>
