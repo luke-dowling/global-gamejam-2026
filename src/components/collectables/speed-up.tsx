@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
 import { usePlayerSpeed } from "../../hooks/use-player-speed";
+import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
 
 interface SpeedUpProps {
@@ -19,6 +21,11 @@ export default function SpeedUp({
 }: SpeedUpProps) {
   const { applySpeedBoost } = usePlayerSpeed();
   const { updateGameEventLog } = useGame();
+  const textures = useTextures();
+  const speedUpTexture = useMemo(() => {
+    const texture = textures.speedUp.clone();
+    return texture;
+  }, [textures]);
 
   function onCollect() {
     updateGameEventLog("Speed Increase!");
@@ -29,6 +36,11 @@ export default function SpeedUp({
   }
 
   return (
-    <Collectable position={position} color="#00FF00" onCollect={onCollect} />
+    <Collectable
+      position={position}
+      texture={speedUpTexture}
+      color="#00FF00"
+      onCollect={onCollect}
+    />
   );
 }

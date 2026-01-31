@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
+import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
 
 interface HealingPotionProps {
@@ -13,6 +15,11 @@ export default function HealingPotion({
   onCollect: onCollectCallback,
 }: HealingPotionProps) {
   const { healPlayer } = useGame();
+  const textures = useTextures();
+  const healingPotionTexture = useMemo(() => {
+    const texture = textures.healingPotion.clone();
+    return texture;
+  }, [textures]);
 
   function onCollect() {
     healPlayer();
@@ -22,6 +29,11 @@ export default function HealingPotion({
   }
 
   return (
-    <Collectable position={position} color="#FF0000" onCollect={onCollect} />
+    <Collectable
+      position={position}
+      texture={healingPotionTexture}
+      color="#FF0000"
+      onCollect={onCollect}
+    />
   );
 }

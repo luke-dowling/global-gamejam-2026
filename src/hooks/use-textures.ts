@@ -6,6 +6,8 @@ import enemyImage from "../assets/enemy.png";
 import floorGreyImage from "../assets/floor-grey.png";
 import floorImage from "../assets/floor.png";
 import vaccineImage from "../assets/powerup-vaccine.png";
+import speedUpImage from "../assets/powerup-speedboost.png";
+import healingPotionImage from "../assets/powerup-health.png";
 import playerSpritesImage from "../assets/player-sprites.png";
 import statusUiHealthHeartImage from "../assets/status-ui-health-heart.png";
 
@@ -18,6 +20,8 @@ export const GAME_IMAGES = {
   floorGrey: floorGreyImage,
   statusUiHealthHeart: statusUiHealthHeartImage,
   vaccine: vaccineImage,
+  speedUp: speedUpImage,
+  healingPotion: healingPotionImage,
 };
 
 export type GameTextures = {
@@ -28,6 +32,8 @@ export type GameTextures = {
   floorGrey: THREE.Texture;
   statusUiHealthHeart: THREE.Texture;
   vaccine: THREE.Texture;
+  speedUp: THREE.Texture;
+  healingPotion: THREE.Texture;
 };
 
 const TexturesContext = createContext<GameTextures | null>(null);
