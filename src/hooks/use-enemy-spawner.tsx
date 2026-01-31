@@ -1,28 +1,35 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
+import { type ComponentType } from "react";
 
-export type Enemy = {
+export type EnemyType = {
+  component: ComponentType<{
+    position: [number, number];
+    onDestroy?: () => void;
+  }>;
+  weight?: number; // Probability weight for spawning (default: 1)
+};
+
+export type SpawnedEnemy = {
   id: number;
   position: [number, number];
-  speed: number;
+  type: EnemyType;
 };
 
 interface EnemySpawnerConfig {
   spawnInterval: number;
-  baseSpeed: number;
-  maxSpeedIncrease: number;
-  initialEnemies?: Enemy[];
+  enemyTypes: EnemyType[]; // Array of enemy types to spawn
+  initialEnemies?: SpawnedEnemy[];
   screenBorder?: number;
 }
 
 export function useEnemySpawner({
   initialEnemies = [],
   spawnInterval,
-  baseSpeed,
-  maxSpeedIncrease,
+  enemyTypes,
   screenBorder = 12,
 }: EnemySpawnerConfig) {
-  const [enemies, setEnemies] = useState<Enemy[]>(initialEnemies);
+  const [enemies, setEnemies] = useState<SpawnedEnemy[]>(initialEnemies);
   const nextIdRef = useRef(
     initialEnemies.length > 0
       ? Math.max(...initialEnemies.map((e) => e.id)) + 1
@@ -32,6 +39,24 @@ export function useEnemySpawner({
 
   const removeEnemy = (id: number) => {
     setEnemies((prev) => prev.filter((enemy) => enemy.id !== id));
+  };
+
+  // Select a random enemy type based on weights
+  const selectRandomEnemyType = (): EnemyType => {
+    const totalWeight = enemyTypes.reduce(
+      (sum, type) => sum + (type.weight ?? 1),
+      0
+    );
+    let random = Math.random() * totalWeight;
+
+    for (const type of enemyTypes) {
+      random -= type.weight ?? 1;
+      if (random <= 0) {
+        return type;
+      }
+    }
+
+    return enemyTypes[0]; // Fallback
   };
 
   // Spawn new enemies over time with increasing difficulty
@@ -72,13 +97,9 @@ export function useEnemySpawner({
           ];
       }
 
-      // Speed increases slightly with each spawned enemy
-      const speedIncrease = Math.min(newId * 0.05, maxSpeedIncrease);
+      const enemyType = selectRandomEnemyType();
 
-      setEnemies((prev) => [
-        ...prev,
-        { id: newId, position, speed: baseSpeed + speedIncrease },
-      ]);
+      setEnemies((prev) => [...prev, { id: newId, position, type: enemyType }]);
     }
   });
 

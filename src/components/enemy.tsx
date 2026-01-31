@@ -1,8 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as THREE from "three";
-import enemyImage from "../assets/enemy.png";
 import {
   useAnimation,
   type Animation,
@@ -12,20 +11,11 @@ import { useGame } from "../hooks/use-game";
 import { isColliding } from "../utils/collision";
 import { type MovementBehavior } from "../utils/movement";
 
-const spriteSheet: SpriteSheetData = {
-  url: enemyImage,
-  tileWidth: 32,
-  tileHeight: 32,
-  rows: 1,
-  cols: 1,
-};
-
-const idleAnimation: Animation = [{ x: 0, y: 0, duration: 1 }];
-
-const movingAnimation: Animation = [{ x: 0, y: 0, duration: 1 }];
-
 interface EnemyProps {
   position: [number, number];
+  spriteSheet: SpriteSheetData;
+  idleAnimation: Animation;
+  movingAnimation?: Animation;
   speed: number;
   movementBehavior: MovementBehavior;
   onDestroy?: () => void;
@@ -33,6 +23,9 @@ interface EnemyProps {
 
 export default function Enemy({
   position,
+  spriteSheet,
+  idleAnimation,
+  movingAnimation,
   speed,
   movementBehavior,
   onDestroy,
@@ -42,6 +35,9 @@ export default function Enemy({
   const playerMeshRef = useRef<THREE.Mesh | null>(null);
   const hasCollidedRef = useRef<boolean>(false);
   const previousPositionRef = useRef<THREE.Vector3 | null>(null);
+  const [facingDirection, setFacingDirection] = useState<"left" | "right">(
+    "left"
+  );
   const { playAnimation, updateFrame } = useAnimation(
     spriteSheet,
     idleAnimation
@@ -69,13 +65,27 @@ export default function Enemy({
       speed,
     });
 
+    // Track horizontal movement direction for mirroring
+    const deltaX = previousPositionRef.current
+      ? enemyMeshRef.current.position.x - previousPositionRef.current.x
+      : 0;
+
+    if (deltaX > 0) {
+      setFacingDirection("left");
+    } else if (deltaX < 0) {
+      setFacingDirection("right");
+    }
+
+    // Mirror the mesh based on facing direction
+    enemyMeshRef.current.scale.x = facingDirection === "left" ? -1 : 1;
+
     // Determine if enemy is moving
     const isMoving =
       previousPositionRef.current &&
       !enemyMeshRef.current.position.equals(previousPositionRef.current);
 
     // Update animation based on movement
-    if (isMoving) {
+    if (isMoving && movingAnimation) {
       playAnimation(movingAnimation);
     } else {
       playAnimation(idleAnimation);
@@ -108,7 +118,7 @@ export default function Enemy({
   return (
     <mesh ref={enemyMeshRef} position={[position[0], position[1], 0]}>
       <planeGeometry args={[1, 1]} />
-      <meshBasicMaterial map={enemyTexture} transparent color="#ff4444" />
+      <meshBasicMaterial map={enemyTexture} transparent />
     </mesh>
   );
 }

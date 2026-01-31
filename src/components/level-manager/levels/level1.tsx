@@ -3,13 +3,12 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import floorImage from "../../../assets/floor.png";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
-import { followPlayer } from "../../../utils/movement";
+import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
 import HealingPotion from "../../collectables/healing-potion";
 import SpeedUp from "../../collectables/speed-up";
-import Enemy from "../../enemy";
-import Obstacle from "../../obstacle";
-import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
+import Caugher from "../../enemies/caugher";
+import Obstacle from "../../obstacle";
 
 const obstacleConfigs = [
   { position: [3, 0] as [number, number], size: [2, 2] as [number, number] },
@@ -47,17 +46,26 @@ export default function Level1() {
   const floorTexture = useTexture(floorImage);
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1,
-    baseSpeed: 1.5,
-    maxSpeedIncrease: 3,
-    initialEnemies: [{ id: 1, position: [8, 8], speed: 1.5 }],
+    enemyTypes: [{ component: Caugher, weight: 1 }],
+    initialEnemies: [
+      {
+        id: 1,
+        position: [6, 6],
+        type: { component: Caugher, weight: 1 },
+      },
+    ],
   });
 
   useMemo(() => {
     if (floorTexture) {
       // Configure texture for pixel art and tiling
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.magFilter = THREE.NearestFilter;
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.minFilter = THREE.NearestFilter;
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.wrapS = THREE.RepeatWrapping;
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.wrapT = THREE.RepeatWrapping;
       floorTexture.repeat.set(32, 32);
     }
@@ -109,15 +117,16 @@ export default function Level1() {
         />
       ))}
 
-      {enemies.map((enemy) => (
-        <Enemy
-          key={enemy.id}
-          position={enemy.position}
-          speed={enemy.speed}
-          movementBehavior={followPlayer}
-          onDestroy={() => removeEnemy(enemy.id)}
-        />
-      ))}
+      {enemies.map((enemy) => {
+        const EnemyComponent = enemy.type.component;
+        return (
+          <EnemyComponent
+            key={enemy.id}
+            position={enemy.position}
+            onDestroy={() => removeEnemy(enemy.id)}
+          />
+        );
+      })}
     </>
   );
 }

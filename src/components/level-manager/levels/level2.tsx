@@ -3,26 +3,34 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import floorImage from "../../../assets/floor.png";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
-import { fleeFromPlayer } from "../../../utils/movement";
 import SpeedUp from "../../collectables/speed-up";
-import Enemy from "../../enemy";
+import Caugher from "../../enemies/caugher";
 import Obstacle from "../../obstacle";
 
 export default function Level2() {
   const floorTexture = useTexture(floorImage);
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1.5,
-    baseSpeed: 2,
-    maxSpeedIncrease: 2,
-    initialEnemies: [{ id: 1, position: [-8, -8], speed: 2 }],
+    enemyTypes: [{ component: Caugher, weight: 1 }],
+    initialEnemies: [
+      {
+        id: 1,
+        position: [5, 5],
+        type: { component: Caugher, weight: 1 },
+      },
+    ],
   });
 
   useMemo(() => {
     if (floorTexture) {
       // Configure texture for pixel art and tiling
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.magFilter = THREE.NearestFilter;
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.minFilter = THREE.NearestFilter;
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.wrapS = THREE.RepeatWrapping;
+      // eslint-disable-next-line react-hooks/immutability
       floorTexture.wrapT = THREE.RepeatWrapping;
       floorTexture.repeat.set(40, 40);
     }
@@ -45,15 +53,16 @@ export default function Level2() {
       <SpeedUp position={[-10, -10]} duration={4} speedMultiplier={3} />
       <SpeedUp position={[0, -12]} duration={6} speedMultiplier={2} />
 
-      {enemies.map((enemy) => (
-        <Enemy
-          key={enemy.id}
-          position={enemy.position}
-          speed={enemy.speed}
-          movementBehavior={fleeFromPlayer}
-          onDestroy={() => removeEnemy(enemy.id)}
-        />
-      ))}
+      {enemies.map((enemy) => {
+        const EnemyComponent = enemy.type.component;
+        return (
+          <EnemyComponent
+            key={enemy.id}
+            position={enemy.position}
+            onDestroy={() => removeEnemy(enemy.id)}
+          />
+        );
+      })}
     </>
   );
 }
