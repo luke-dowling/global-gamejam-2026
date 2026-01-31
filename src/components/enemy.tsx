@@ -19,8 +19,8 @@ export default function Enemy({
 }: EnemyProps) {
   const { playerPosition, takePlayerDamage } = useGame();
   const enemyMeshRef = useRef<THREE.Mesh>(null!);
-  const playerMeshRef = useRef<THREE.Mesh>(null!);
-  const lastDamageTimeRef = useRef<number>(0);
+  const playerMeshRef = useRef<THREE.Mesh | null>(null);
+  const damageTimerRef = useRef<number>(0);
   const enemyTexture = useTexture("/src/assets/enemy.png", (texture) => {
     texture.magFilter = THREE.NearestFilter;
     texture.minFilter = THREE.NearestFilter;
@@ -36,25 +36,27 @@ export default function Enemy({
       speed,
     });
 
-    // Find player mesh if we haven't already
+    // Find player mesh once
     if (!playerMeshRef.current) {
       const playerMesh = scene.getObjectByName("player-mesh");
       if (playerMesh instanceof THREE.Mesh) {
         playerMeshRef.current = playerMesh;
+      } else {
+        return; // Exit early if player not found
       }
     }
 
     // Check collision with player
-    if (
-      playerMeshRef.current &&
-      isColliding(enemyMeshRef.current, playerMeshRef.current)
-    ) {
-      const currentTime = Date.now();
+    if (isColliding(enemyMeshRef.current, playerMeshRef.current)) {
+      damageTimerRef.current += delta;
       // Only deal damage once per second to avoid multiple damage per frame
-      if (currentTime - lastDamageTimeRef.current > 1000) {
+      if (damageTimerRef.current >= 1) {
         takePlayerDamage();
-        lastDamageTimeRef.current = currentTime;
+        damageTimerRef.current = 0;
       }
+    } else {
+      // Reset timer when not colliding
+      damageTimerRef.current = 0;
     }
   });
 

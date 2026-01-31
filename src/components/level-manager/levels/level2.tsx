@@ -1,4 +1,5 @@
 import { useTexture } from "@react-three/drei";
+import { useMemo } from "react";
 import * as THREE from "three";
 import { fleeFromPlayer } from "../../../utils/movement";
 import SpeedUp from "../../collectables/speed-up";
@@ -6,14 +7,18 @@ import Enemy from "../../enemy";
 import Obstacle from "../../obstacle";
 
 export default function Level2() {
-  const floorTexture = useTexture("/src/assets/floor.png", (texture) => {
-    // Configure texture for pixel art and tiling
-    texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestFilter;
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(40, 40);
-  });
+  const floorTexture = useTexture("/src/assets/floor.png");
+
+  useMemo(() => {
+    if (floorTexture) {
+      // Configure texture for pixel art and tiling
+      floorTexture.magFilter = THREE.NearestFilter;
+      floorTexture.minFilter = THREE.NearestFilter;
+      floorTexture.wrapS = THREE.RepeatWrapping;
+      floorTexture.wrapT = THREE.RepeatWrapping;
+      floorTexture.repeat.set(40, 40);
+    }
+  }, [floorTexture]);
 
   return (
     <>

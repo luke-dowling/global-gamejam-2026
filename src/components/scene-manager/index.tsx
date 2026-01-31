@@ -13,16 +13,20 @@ const scenes = {
   gameOver: GameOver,
 };
 
-const audio = new Audio(mainTheme);
-
 export type SceneName = keyof typeof scenes;
 
 export default function SceneManager() {
   const { activeSceneName } = useSceneManager();
 
-  const audioRef = useRef<HTMLAudioElement>(audio);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio(mainTheme);
+      audioRef.current.volume = 0.6;
+      audioRef.current.loop = true;
+    }
+
     const audio = audioRef.current;
 
     audio.play().catch((error) => {
