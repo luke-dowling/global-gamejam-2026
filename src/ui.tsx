@@ -25,7 +25,7 @@ export default function UI() {
               key={index}
               src={state === "healthy" ? healthHeart : healthDamage}
               alt={state}
-              className="w-8 h-8"
+              className="w-16 h-16 pixelated"
             />
           ))}
         </div>
