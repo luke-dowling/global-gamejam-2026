@@ -1,15 +1,17 @@
+import type { Texture } from "three";
 import { useCollectable } from "../hooks/use-collectable";
 
 export interface CollectableProps {
   position: [number, number];
   color: string;
   onCollect: () => void;
+  texture: Texture;
 }
 
 export default function Collectable({
   position,
-  color,
   onCollect,
+  texture,
 }: CollectableProps) {
   const { meshRef, isCollected } = useCollectable({
     onCollect: () => {
@@ -23,15 +25,9 @@ export default function Collectable({
   }
 
   return (
-    <mesh ref={meshRef} position={[position[0], position[1], 0]}>
-      <boxGeometry args={[0.5, 0.5, 0.5]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={0.5}
-        metalness={0.8}
-        roughness={0.2}
-      />
+    <mesh ref={meshRef} name="mesh" position={[position[0], position[1], 0]}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial map={texture} transparent />
     </mesh>
   );
 }

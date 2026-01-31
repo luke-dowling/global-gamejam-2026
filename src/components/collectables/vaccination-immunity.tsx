@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
+import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
 
 interface VaccinationImmunityProps {
@@ -13,6 +15,11 @@ export default function VaccinationImmunity({
   onCollect: onCollectCallback,
 }: VaccinationImmunityProps) {
   const { setIsPlayerImmuneToDamage } = useGame();
+  const textures = useTextures();
+  const vaccineTexture = useMemo(() => {
+    const texture = textures.vaccine.clone();
+    return texture;
+  }, [textures]);
 
   function onCollect() {
     // * player doesnt take any damage for 3 seconds
@@ -27,6 +34,11 @@ export default function VaccinationImmunity({
   }
 
   return (
-    <Collectable position={position} color="#1b3ae9" onCollect={onCollect} />
+    <Collectable
+      position={position}
+      texture={vaccineTexture}
+      color="#1b3ae9"
+      onCollect={onCollect}
+    />
   );
 }

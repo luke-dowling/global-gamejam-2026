@@ -5,6 +5,7 @@ import cougherMaleImage from "../assets/cougher-m.png";
 import enemyImage from "../assets/enemy.png";
 import floorGreyImage from "../assets/floor-grey.png";
 import floorImage from "../assets/floor.png";
+import vaccineImage from "../assets/powerup-vaccine.png";
 import playerSpritesImage from "../assets/player-sprites.png";
 import statusUiHealthHeartImage from "../assets/status-ui-health-heart.png";
 
@@ -16,6 +17,7 @@ export const GAME_IMAGES = {
   floor: floorImage,
   floorGrey: floorGreyImage,
   statusUiHealthHeart: statusUiHealthHeartImage,
+  vaccine: vaccineImage,
 };
 
 export type GameTextures = {
@@ -25,6 +27,7 @@ export type GameTextures = {
   floor: THREE.Texture;
   floorGrey: THREE.Texture;
   statusUiHealthHeart: THREE.Texture;
+  vaccine: THREE.Texture;
 };
 
 const TexturesContext = createContext<GameTextures | null>(null);
