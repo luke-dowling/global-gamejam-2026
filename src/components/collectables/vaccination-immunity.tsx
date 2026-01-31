@@ -15,6 +15,7 @@ export default function VaccinationImmunity({
   const { setIsPlayerImmuneToDamage } = useGame();
 
   function onCollect() {
+    // * player doesnt take any damage for 3 seconds
     setIsPlayerImmuneToDamage(true);
     setTimeout(() => {
       setIsPlayerImmuneToDamage(false);
