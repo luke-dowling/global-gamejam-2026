@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 interface ObstacleConfig {
   position: [number, number];
@@ -30,22 +30,33 @@ interface CollectableItem {
   position: [number, number, number];
 }
 
+const isInsideBounds = (pos: [number, number, number], b: Bounds) => {
+  const [x, y] = pos;
+  return x >= b.minX && x <= b.maxX && y >= b.minY && y <= b.maxY;
+};
+
 export function useRespawningCollectables({
   obstacles,
   bounds,
   collectableConfig,
   respawnDelay = 3000,
 }: RespawningCollectablesConfig) {
-  // Generate unique IDs using Math.random()
-  const generateId = () => `collectable-${Math.random().toString()}`;
+  const boundsRef = useRef(bounds);
+  useEffect(() => {
+    boundsRef.current = bounds;
+  }, [bounds]);
+
+  const generateId = () => `collectable-${Math.random().toString(16).slice(2)}`;
 
   const generateRandomPosition = useCallback((): [number, number, number] => {
     const maxAttempts = 100;
     let attempts = 0;
 
     while (attempts < maxAttempts) {
-      const x = Math.random() * (bounds.maxX - bounds.minX) + bounds.minX;
-      const y = Math.random() * (bounds.maxY - bounds.minY) + bounds.minY;
+      const b = boundsRef.current;
+
+      const x = Math.random() * (b.maxX - b.minX) + b.minX;
+      const y = Math.random() * (b.maxY - b.minY) + b.minY;
 
       // Check if position collides with any obstacle
       let hasCollision = false;
@@ -75,10 +86,9 @@ export function useRespawningCollectables({
       attempts++;
     }
 
-    // Fallback to center if no valid position found
     console.warn("Could not find valid spawn position, using fallback");
     return [0, 0, 0];
-  }, [obstacles, bounds]);
+  }, [obstacles]);
 
   const generateInitialCollectables = useCallback(
     (count: number): CollectableItem[] => {
@@ -103,6 +113,43 @@ export function useRespawningCollectables({
     CollectableItem[]
   >(() => generateInitialCollectables(collectableConfig.vaccinationImmunities));
 
+  const boundsKey = `${bounds.minX},${bounds.maxX},${bounds.minY},${bounds.maxY}`;
+
+  useEffect(() => {
+    const reconcile = (
+      prev: CollectableItem[],
+      target: number
+    ): CollectableItem[] => {
+      const b = boundsRef.current;
+
+      // despawn if not visible (outside bounds)
+      const inside = prev.filter((it) => isInsideBounds(it.position, b));
+      const MAX_SPAWN_PER_TICK = 5;
+
+      // fill back up to target count in current bounds
+      const missing = Math.max(0, target - inside.length);
+      const spawnNow = Math.min(missing, MAX_SPAWN_PER_TICK);
+      if (spawnNow === 0) return inside;
+
+      const spawned = generateInitialCollectables(spawnNow);
+      return [...inside, ...spawned];
+    };
+
+    setHealthPotions((prev) =>
+      reconcile(prev, collectableConfig.healthPotions)
+    );
+    setSpeedUps((prev) => reconcile(prev, collectableConfig.speedUps));
+    setVaccinationImmunities((prev) =>
+      reconcile(prev, collectableConfig.vaccinationImmunities)
+    );
+  }, [
+    boundsKey,
+    collectableConfig.healthPotions,
+    collectableConfig.speedUps,
+    collectableConfig.vaccinationImmunities,
+    generateInitialCollectables,
+  ]);
+
   const handleHealthPotionCollect = useCallback(
     (id: string) => {
       setHealthPotions((prev) => prev.filter((item) => item.id !== id));
@@ -110,10 +157,7 @@ export function useRespawningCollectables({
       setTimeout(() => {
         setHealthPotions((prev) => [
           ...prev,
-          {
-            id: generateId(),
-            position: generateRandomPosition(),
-          },
+          { id: generateId(), position: generateRandomPosition() },
         ]);
       }, respawnDelay);
     },
@@ -127,15 +171,15 @@ export function useRespawningCollectables({
       setTimeout(() => {
         setSpeedUps((prev) => [
           ...prev,
-          {
-            id: generateId(),
-            position: generateRandomPosition(),
-          },
+          { id: generateId(), position: generateRandomPosition() },
         ]);
       }, respawnDelay);
     },
     [generateRandomPosition, respawnDelay]
   );
+  const handleSpeedUpRemove = useCallback((id: string) => {
+    setSpeedUps((prev) => prev.filter((item) => item.id !== id));
+  }, []);
 
   const handleVaccinationImmunityCollect = useCallback(
     (id: string) => {
@@ -144,10 +188,7 @@ export function useRespawningCollectables({
       setTimeout(() => {
         setVaccinationImmunities((prev) => [
           ...prev,
-          {
-            id: generateId(),
-            position: generateRandomPosition(),
-          },
+          { id: generateId(), position: generateRandomPosition() },
         ]);
       }, respawnDelay);
     },
@@ -160,6 +201,7 @@ export function useRespawningCollectables({
     vaccinationImmunities,
     onHealthPotionCollect: handleHealthPotionCollect,
     onSpeedUpCollect: handleSpeedUpCollect,
+    onSpeedUpRemove: handleSpeedUpRemove,
     onVaccinationImmunityCollect: handleVaccinationImmunityCollect,
   };
 }

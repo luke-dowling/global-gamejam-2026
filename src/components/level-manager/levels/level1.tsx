@@ -9,6 +9,8 @@ import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
 import Caugher from "../../enemies/caugher";
 import Obstacle from "../../obstacle";
+import { boundsAroundPlayer } from "../../../collectable-utils";
+import { useGame } from "../../../hooks/use-game";
 
 const obstacleConfigs = [
   { position: [3, 0] as [number, number], size: [2, 2] as [number, number] },
@@ -25,6 +27,20 @@ const obstacleConfigs = [
 ];
 
 export default function Level1() {
+  const { playerPosition } = useGame();
+
+  const CHUNK_SIZE = 32;
+
+  const cx = Math.floor(playerPosition.x / CHUNK_SIZE);
+  const cy = Math.floor(playerPosition.y / CHUNK_SIZE);
+
+  const bounds = useMemo(() => {
+    // center of the current chunk
+    const centerX = (cx + 0.5) * CHUNK_SIZE;
+    const centerY = (cy + 0.5) * CHUNK_SIZE;
+    return boundsAroundPlayer(centerX, centerY, 10);
+  }, [cx, cy]);
+
   const {
     healthPotions,
     speedUps,
@@ -34,10 +50,10 @@ export default function Level1() {
     onVaccinationImmunityCollect,
   } = useRespawningCollectables({
     obstacles: obstacleConfigs,
-    bounds: { minX: -10, maxX: 10, minY: -10, maxY: 10 },
+    bounds: bounds,
     collectableConfig: {
-      healthPotions: 3,
-      speedUps: 3,
+      healthPotions: 10,
+      speedUps: 10,
       vaccinationImmunities: 1,
     },
     respawnDelay: 5000,
