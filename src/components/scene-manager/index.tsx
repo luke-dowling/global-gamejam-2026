@@ -19,6 +19,7 @@ export default function SceneManager() {
   const { activeSceneName } = useSceneManager();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hasInteractedRef = useRef(false);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -29,11 +30,32 @@ export default function SceneManager() {
 
     const audio = audioRef.current;
 
-    audio.play().catch((error) => {
-      console.error("Failed to play background music:", error);
-    });
+    const startAudio = () => {
+      if (!hasInteractedRef.current) {
+        hasInteractedRef.current = true;
+        audio.play().catch((error) => {
+          console.error("Failed to play background music:", error);
+        });
+      }
+    };
+
+    // Wait for user interaction before playing
+    const handleInteraction = () => {
+      startAudio();
+      // Remove listeners after first interaction
+      document.removeEventListener("keydown", handleInteraction);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("touchstart", handleInteraction);
+    };
+
+    document.addEventListener("keydown", handleInteraction);
+    document.addEventListener("click", handleInteraction);
+    document.addEventListener("touchstart", handleInteraction);
 
     return () => {
+      document.removeEventListener("keydown", handleInteraction);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("touchstart", handleInteraction);
       audio.pause();
       audio.currentTime = 0;
     };
