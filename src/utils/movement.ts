@@ -46,3 +46,13 @@ export const fleeFromPlayer: MovementBehavior = ({
     currentPosition.y += normalizedY * speed * delta;
   }
 };
+
+export const walkInDirection = (
+  directionX: number,
+  directionY: number
+): MovementBehavior => {
+  return ({ currentPosition, delta, speed }) => {
+    currentPosition.x += directionX * speed * delta;
+    currentPosition.y += directionY * speed * delta;
+  };
+};

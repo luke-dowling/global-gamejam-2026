@@ -5,18 +5,19 @@ import floorImage from "../../../assets/floor.png";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
 import SpeedUp from "../../collectables/speed-up";
 import Caugher from "../../enemies/caugher";
+import Walker from "../../enemies/walker";
 import Obstacle from "../../obstacle";
 
 export default function Level2() {
   const floorTexture = useTexture(floorImage);
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1.5,
-    enemyTypes: [{ component: Caugher, weight: 1 }],
+    enemyTypes: [{ component: Caugher }, { component: Walker }],
     initialEnemies: [
       {
         id: 1,
         position: [5, 5],
-        type: { component: Caugher, weight: 1 },
+        type: { component: Caugher },
       },
     ],
   });
