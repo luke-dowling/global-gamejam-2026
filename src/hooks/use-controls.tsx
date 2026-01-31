@@ -9,11 +9,10 @@ export type KeyHandler =
 
 export type ControlSchema = {
   keyboard?: Record<string, KeyHandler>;
-  mouse?: {
-    onClick?: (e: MouseEvent) => void;
-    onMouseMove?: (e: MouseEvent) => void;
-    onMouseDown?: (e: MouseEvent) => void;
-    onMouseUp?: (e: MouseEvent) => void;
+  touch?: {
+    onTouchStart?: (e: TouchEvent) => void;
+    onTouchMove?: (e: TouchEvent) => void;
+    onTouchEnd?: (e: TouchEvent) => void;
   };
 };
 
@@ -47,51 +46,41 @@ export function useControls(schema: ControlSchema) {
       }
     };
 
-    const handleClick = (e: MouseEvent) => {
-      schema.mouse?.onClick?.(e);
+    const handleTouchStart = (e: TouchEvent) => {
+      schema.touch?.onTouchStart?.(e);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      schema.mouse?.onMouseMove?.(e);
+    const handleTouchMove = (e: TouchEvent) => {
+      schema.touch?.onTouchMove?.(e);
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
-      schema.mouse?.onMouseDown?.(e);
-    };
-
-    const handleMouseUp = (e: MouseEvent) => {
-      schema.mouse?.onMouseUp?.(e);
+    const handleTouchEnd = (e: TouchEvent) => {
+      schema.touch?.onTouchEnd?.(e);
     };
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    if (schema.mouse?.onClick) {
-      window.addEventListener("click", handleClick);
+    if (schema.touch?.onTouchStart) {
+      window.addEventListener("touchstart", handleTouchStart);
     }
-    if (schema.mouse?.onMouseMove) {
-      window.addEventListener("mousemove", handleMouseMove);
+    if (schema.touch?.onTouchMove) {
+      window.addEventListener("touchmove", handleTouchMove);
     }
-    if (schema.mouse?.onMouseDown) {
-      window.addEventListener("mousedown", handleMouseDown);
-    }
-    if (schema.mouse?.onMouseUp) {
-      window.addEventListener("mouseup", handleMouseUp);
+    if (schema.touch?.onTouchEnd) {
+      window.addEventListener("touchend", handleTouchEnd);
     }
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      if (schema.mouse?.onClick) {
-        window.removeEventListener("click", handleClick);
+      if (schema.touch?.onTouchStart) {
+        window.removeEventListener("touchstart", handleTouchStart);
       }
-      if (schema.mouse?.onMouseMove) {
-        window.removeEventListener("mousemove", handleMouseMove);
+      if (schema.touch?.onTouchMove) {
+        window.removeEventListener("touchmove", handleTouchMove);
       }
-      if (schema.mouse?.onMouseDown) {
-        window.removeEventListener("mousedown", handleMouseDown);
-      }
-      if (schema.mouse?.onMouseUp) {
-        window.removeEventListener("mouseup", handleMouseUp);
+      if (schema.touch?.onTouchEnd) {
+        window.removeEventListener("touchend", handleTouchEnd);
       }
     };
   }, [schema]);

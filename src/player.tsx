@@ -1,6 +1,7 @@
 import { OrthographicCamera } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import * as THREE from "three";
 import {
   useAnimation,
@@ -9,9 +10,9 @@ import {
 } from "./hooks/use-animation";
 import { useControls } from "./hooks/use-controls";
 import { useGame } from "./hooks/use-game";
+import { useTextures } from "./hooks/use-textures";
 import UI from "./ui";
 import { isColliding } from "./utils/collision";
-import { useTextures } from "./hooks/use-textures";
 
 const spriteSheet: SpriteSheetData = {
   url: "", // URL not needed anymore
@@ -39,6 +40,8 @@ export default function Player() {
     playerHealth,
     isPlayerImmuneToDamage,
   } = useGame();
+  const { size } = useThree();
+  const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const velocityRef = useRef(velocity);
   const playerMeshRef = useRef<THREE.Mesh>(null!);
@@ -49,6 +52,7 @@ export default function Player() {
   );
   const [showImmunityBubble, setShowImmunityBubble] = useState(false);
   const immunityBubbleRef = useRef<THREE.Mesh>(null);
+  const isTouchActiveRef = useRef(false);
   const { playAnimation, updateFrame } = useAnimation(
     spriteSheet,
     idleAnimation
@@ -61,6 +65,30 @@ export default function Player() {
     texture.repeat.set(1 / spriteSheet.cols, 1 / spriteSheet.rows);
     return texture;
   }, [textures]);
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isTouchActiveRef.current) return;
+
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // Calculate direction from screen center
+    const dx = (touch.clientX / size.width) * 2 - 1;
+    const dy = (touch.clientY / size.height) * 2 - 1;
+
+    const magnitude = Math.sqrt(dx * dx + dy * dy);
+
+    if (magnitude > 0.1) {
+      setVelocity({ x: dx / magnitude, y: dy / magnitude });
+    } else {
+      setVelocity({ x: 0, y: 0 });
+    }
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    isTouchActiveRef.current = true;
+    handleTouchMove(e);
+  };
 
   useEffect(() => {
     velocityRef.current = velocity;
@@ -84,40 +112,69 @@ export default function Player() {
   }, [isPlayerImmuneToDamage]);
 
   useControls({
-    keyboard: {
-      w: {
-        onPress: () => setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
-      },
-      s: {
-        onPress: () => setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
-      },
-      a: {
-        onPress: () => setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
-      },
-      d: {
-        onPress: () => setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
-      },
-      ArrowUp: {
-        onPress: () => setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
-      },
-      ArrowDown: {
-        onPress: () => setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
-      },
-      ArrowLeft: {
-        onPress: () => setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
-      },
-      ArrowRight: {
-        onPress: () => setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
-        onRelease: () => setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
-      },
-    },
+    ...(isTouch
+      ? {
+          touch: {
+            onTouchStart: handleTouchStart,
+            onTouchMove: handleTouchMove,
+            onTouchEnd: () => {
+              isTouchActiveRef.current = false;
+              setVelocity({ x: 0, y: 0 });
+            },
+          },
+        }
+      : {
+          keyboard: {
+            w: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
+            },
+            s: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
+            },
+            a: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
+            },
+            d: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
+            },
+            ArrowUp: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
+            },
+            ArrowDown: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y + 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, y: prev.y - 1 })),
+            },
+            ArrowLeft: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
+            },
+            ArrowRight: {
+              onPress: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x + 1 })),
+              onRelease: () =>
+                setVelocity((prev) => ({ ...prev, x: prev.x - 1 })),
+            },
+          },
+        }),
   });
 
   useFrame((_, delta) => {

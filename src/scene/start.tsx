@@ -1,14 +1,16 @@
 import { useFrame } from "@react-three/fiber";
+import { VenetianMask } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useMediaQuery } from "react-responsive";
+import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
-import { useSceneManager } from "../components/scene-manager/use-scene-manager";
-import { VenetianMask } from "lucide-react";
 import { useGame } from "../hooks/use-game";
 
 export default function Start() {
   const { switchScene } = useSceneManager();
   const { resetPlayer } = useGame();
+  const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
   const pressSpaceRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
@@ -16,12 +18,24 @@ export default function Start() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function startGame() {
+    switchScene("game");
+  }
+
   useControls({
-    keyboard: {
-      // Todo: change game to menu when the game is ready
-      " ": () => switchScene("game"),
-      Enter: () => switchScene("game"),
-    },
+    ...(isTouch
+      ? {
+          touch: {
+            onTouchStart: startGame,
+          },
+        }
+      : {
+          keyboard: {
+            // Todo: change game to menu when the game is ready
+            " ": startGame,
+            Enter: startGame,
+          },
+        }),
   });
 
   useFrame(({ clock }) => {
@@ -53,7 +67,7 @@ export default function Start() {
           </section>
         </header>
         <p ref={pressSpaceRef} className="text-3xl font-extralight">
-          Press Space to Start
+          {isTouch ? "Tap to Start" : "Press Space or Enter to Start"}
         </p>
       </div>
     </UIElement>
