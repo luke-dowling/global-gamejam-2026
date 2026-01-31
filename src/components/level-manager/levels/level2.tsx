@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
 import { useTextures } from "../../../hooks/use-textures";
 import SpeedUp from "../../collectables/speed-up";
-import Caugher from "../../enemies/caugher";
+import Cougher from "../../enemies/cougher";
 import Walker from "../../enemies/walker";
 import Obstacle from "../../obstacle";
 
@@ -16,12 +16,12 @@ export default function Level2() {
 
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1.5,
-    enemyTypes: [{ component: Caugher }, { component: Walker }],
+    enemyTypes: [{ component: Cougher }, { component: Walker }],
     initialEnemies: [
       {
         id: 1,
         position: [5, 5],
-        type: { component: Caugher },
+        type: { component: Cougher },
       },
     ],
   });

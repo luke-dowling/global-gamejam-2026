@@ -15,9 +15,11 @@ interface EnemyProps {
   spriteSheet: SpriteSheetData;
   idleAnimation: Animation;
   movingAnimation?: Animation;
+  dyingAnimation?: Animation;
   speed: number;
   movementBehavior: MovementBehavior;
   onDestroy?: () => void;
+  health?: number;
 }
 
 export default function Enemy({
@@ -25,6 +27,7 @@ export default function Enemy({
   spriteSheet,
   idleAnimation,
   movingAnimation,
+  dyingAnimation,
   speed,
   movementBehavior,
   onDestroy,
@@ -37,6 +40,10 @@ export default function Enemy({
   const [facingDirection, setFacingDirection] = useState<"left" | "right">(
     "left"
   );
+  const [isDying, setIsDying] = useState(false);
+  const dyingAnimationStartedRef = useRef(false);
+  const dyingAnimationTimeRef = useRef(0);
+
   const { playAnimation, updateFrame } = useAnimation(
     spriteSheet,
     idleAnimation
@@ -50,10 +57,37 @@ export default function Enemy({
     return texture;
   }, [spriteSheet]);
 
-  if (!enemyTexture) return null;
+  // Calculate total duration of dying animation
+  const dyingAnimationDuration = useMemo(() => {
+    if (!dyingAnimation) return 0;
+    return dyingAnimation.reduce((total, frame) => total + frame.duration, 0);
+  }, [dyingAnimation]);
 
   useFrame(({ scene }, delta) => {
     if (!enemyMeshRef.current) return;
+
+    // Handle dying state
+    if (isDying) {
+      if (dyingAnimation) {
+        // Play dying animation once
+        if (!dyingAnimationStartedRef.current) {
+          playAnimation(dyingAnimation);
+          dyingAnimationStartedRef.current = true;
+        }
+
+        updateFrame(delta, enemyTexture);
+        dyingAnimationTimeRef.current += delta;
+
+        // Check if dying animation is complete
+        if (dyingAnimationTimeRef.current >= dyingAnimationDuration) {
+          onDestroy?.();
+        }
+      } else {
+        // No dying animation, destroy immediately
+        onDestroy?.();
+      }
+      return; // Don't process movement or collisions while dying
+    }
 
     const currentPos = enemyMeshRef.current.position.clone();
 
@@ -110,7 +144,10 @@ export default function Enemy({
     ) {
       hasCollidedRef.current = true;
       takePlayerDamage();
-      onDestroy?.();
+
+      if (!isDying) {
+        setIsDying(true);
+      }
     }
   });
 

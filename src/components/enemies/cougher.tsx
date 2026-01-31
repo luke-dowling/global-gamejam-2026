@@ -10,12 +10,22 @@ type Props = {
 };
 
 const idleAnimation: Animation = [{ x: 0, y: 0, duration: 0.2 }];
+const movingAnimation: Animation = [
+  { x: 1, y: 0, duration: 0.1 },
+  { x: 2, y: 0, duration: 0.15 },
+  { x: 3, y: 0, duration: 0.1 },
+  { x: 2, y: 0, duration: 0.15 },
+];
+const dyingAnimation: Animation = [
+  { x: 4, y: 0, duration: 0.2 },
+  { x: 0, y: 0, duration: 0.2 },
+];
 
-export default function Caugher({ position, onDestroy }: Props) {
+export default function Cougher({ position, onDestroy }: Props) {
   const textures = useTextures();
 
   const spriteSheet: SpriteSheetData = {
-    texture: textures.caugherMale,
+    texture: textures.cougherMale,
     tileWidth: 32,
     tileHeight: 32,
     rows: 1,
@@ -28,8 +38,8 @@ export default function Caugher({ position, onDestroy }: Props) {
       speed={1.5}
       spriteSheet={spriteSheet}
       idleAnimation={idleAnimation}
-      // TODO: add moving animation
-      // movingAnimation={movingAnimation}
+      movingAnimation={movingAnimation}
+      dyingAnimation={dyingAnimation}
       movementBehavior={followPlayer}
       onDestroy={onDestroy}
     />

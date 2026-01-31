@@ -5,7 +5,7 @@ import { useTextures } from "../../../hooks/use-textures";
 import HealingPotion from "../../collectables/healing-potion";
 import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
-import Caugher from "../../enemies/caugher";
+import Cougher from "../../enemies/cougher";
 import Walker from "../../enemies/walker";
 import Obstacle from "../../obstacle";
 import { boundsAroundPlayer } from "../../../collectable-utils";
@@ -67,12 +67,12 @@ export default function Level1() {
 
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1,
-    enemyTypes: [{ component: Caugher }, { component: Walker }],
+    enemyTypes: [{ component: Cougher }, { component: Walker }],
     initialEnemies: [
       {
         id: 1,
         position: [6, 6],
-        type: { component: Caugher },
+        type: { component: Cougher },
       },
     ],
   });
