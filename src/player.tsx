@@ -1,8 +1,7 @@
-import { OrthographicCamera, useTexture } from "@react-three/drei";
+import { OrthographicCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import playerSpriteSheet from "./assets/player-sprites.png";
 import {
   useAnimation,
   type Animation,
@@ -12,9 +11,10 @@ import { useControls } from "./hooks/use-controls";
 import { useGame } from "./hooks/use-game";
 import UI from "./ui";
 import { isColliding } from "./utils/collision";
+import { useTextures } from "./hooks/use-textures";
 
 const spriteSheet: SpriteSheetData = {
-  url: playerSpriteSheet,
+  url: "", // URL not needed anymore
   tileWidth: 32,
   tileHeight: 32,
   rows: 1,
@@ -54,15 +54,13 @@ export default function Player() {
     idleAnimation
   );
 
-  const characterTexture = useTexture(spriteSheet.url, (texture) => {
-    texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestFilter;
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-
+  const textures = useTextures();
+  const characterTexture = useMemo(() => {
+    const texture = textures.playerSprites.clone();
     // Set initial UV repeat based on sprite sheet
     texture.repeat.set(1 / spriteSheet.cols, 1 / spriteSheet.rows);
-  });
+    return texture;
+  }, [textures]);
 
   useEffect(() => {
     velocityRef.current = velocity;

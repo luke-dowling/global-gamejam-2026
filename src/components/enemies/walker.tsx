@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import enemyImage from "../../assets/enemy.png";
 import type { SpriteSheetData } from "../../hooks/use-animation";
 import { type Animation } from "../../hooks/use-animation";
 import { useGame } from "../../hooks/use-game";
 import { walkInDirection } from "../../utils/movement";
+import { useTextures } from "../../hooks/use-textures";
 import Enemy from "../enemy";
 
 type Props = {
@@ -11,18 +11,19 @@ type Props = {
   onDestroy?: () => void;
 };
 
-const spriteSheet: SpriteSheetData = {
-  url: enemyImage,
-  tileWidth: 32,
-  tileHeight: 32,
-  rows: 1,
-  cols: 1,
-};
-
 const idleAnimation: Animation = [{ x: 0, y: 0, duration: 0.2 }];
 
 export default function Walker({ position, onDestroy }: Props) {
   const { playerPosition } = useGame();
+  const textures = useTextures();
+
+  const spriteSheet: SpriteSheetData = {
+    texture: textures.enemy,
+    tileWidth: 32,
+    tileHeight: 32,
+    rows: 1,
+    cols: 1,
+  };
 
   // Calculate direction towards player on spawn and lock it
   const movementBehavior = useMemo(() => {

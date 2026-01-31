@@ -2,7 +2,8 @@ import { useRef } from "react";
 import * as THREE from "three";
 
 export type SpriteSheetData = {
-  url: string;
+  url?: string; // Optional now, for backward compatibility
+  texture?: THREE.Texture; // New way to pass texture directly
   tileWidth: number;
   tileHeight: number;
   rows: number;

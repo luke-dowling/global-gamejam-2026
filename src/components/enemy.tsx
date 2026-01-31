@@ -1,6 +1,5 @@
-import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import {
   useAnimation,
@@ -43,15 +42,15 @@ export default function Enemy({
     idleAnimation
   );
 
-  const enemyTexture = useTexture(spriteSheet.url, (texture) => {
-    texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestFilter;
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-
+  const enemyTexture = useMemo(() => {
+    if (!spriteSheet.texture) return null;
+    const texture = spriteSheet.texture.clone();
     // Set initial UV repeat based on sprite sheet
     texture.repeat.set(1 / spriteSheet.cols, 1 / spriteSheet.rows);
-  });
+    return texture;
+  }, [spriteSheet]);
+
+  if (!enemyTexture) return null;
 
   useFrame(({ scene }, delta) => {
     if (!enemyMeshRef.current) return;

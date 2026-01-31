@@ -1,9 +1,7 @@
-import { useTexture } from "@react-three/drei";
 import { useMemo } from "react";
-import * as THREE from "three";
-import floorImage from "../../../assets/floor.png";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
 import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
+import { useTextures } from "../../../hooks/use-textures";
 import HealingPotion from "../../collectables/healing-potion";
 import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
@@ -60,7 +58,13 @@ export default function Level1() {
     respawnDelay: 5000,
   });
 
-  const floorTexture = useTexture(floorImage);
+  const textures = useTextures();
+  const floorTexture = useMemo(() => {
+    const texture = textures.floor.clone();
+    texture.repeat.set(32, 32);
+    return texture;
+  }, [textures]);
+
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1,
     enemyTypes: [{ component: Caugher }, { component: Walker }],
@@ -72,21 +76,6 @@ export default function Level1() {
       },
     ],
   });
-
-  useMemo(() => {
-    if (floorTexture) {
-      // Configure texture for pixel art and tiling
-      // eslint-disable-next-line react-hooks/immutability
-      floorTexture.magFilter = THREE.NearestFilter;
-      // eslint-disable-next-line react-hooks/immutability
-      floorTexture.minFilter = THREE.NearestFilter;
-      // eslint-disable-next-line react-hooks/immutability
-      floorTexture.wrapS = THREE.RepeatWrapping;
-      // eslint-disable-next-line react-hooks/immutability
-      floorTexture.wrapT = THREE.RepeatWrapping;
-      floorTexture.repeat.set(32, 32);
-    }
-  }, [floorTexture]);
 
   return (
     <>
