@@ -1,6 +1,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { type ComponentType } from "react";
+import { useGame } from "./use-game";
 
 export type EnemyType = {
   component: ComponentType<{
@@ -30,6 +31,7 @@ export function useEnemySpawner({
   screenBorder = 12,
 }: EnemySpawnerConfig) {
   const [enemies, setEnemies] = useState<SpawnedEnemy[]>(initialEnemies);
+  const { playerPosition } = useGame();
   const nextIdRef = useRef(
     initialEnemies.length > 0
       ? Math.max(...initialEnemies.map((e) => e.id)) + 1
@@ -74,29 +76,35 @@ export function useEnemySpawner({
       switch (edge) {
         case 0: // top
           position = [
-            Math.random() * screenBorder * 2 - screenBorder,
-            screenBorder,
+            playerPosition.x +
+              (Math.random() * screenBorder * 2 - screenBorder),
+            playerPosition.y + screenBorder,
           ];
           break;
+
         case 1: // right
           position = [
-            screenBorder,
-            Math.random() * screenBorder * 2 - screenBorder,
+            playerPosition.x + screenBorder,
+            playerPosition.y +
+              (Math.random() * screenBorder * 2 - screenBorder),
           ];
           break;
+
         case 2: // bottom
           position = [
-            Math.random() * screenBorder * 2 - screenBorder,
-            -screenBorder,
+            playerPosition.x +
+              (Math.random() * screenBorder * 2 - screenBorder),
+            playerPosition.y - screenBorder,
           ];
           break;
+
         default: // left
           position = [
-            -screenBorder,
-            Math.random() * screenBorder * 2 - screenBorder,
+            playerPosition.x - screenBorder,
+            playerPosition.y +
+              (Math.random() * screenBorder * 2 - screenBorder),
           ];
       }
-
       const enemyType = selectRandomEnemyType();
 
       setEnemies((prev) => [...prev, { id: newId, position, type: enemyType }]);
