@@ -31,7 +31,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const obstacleRefs = useRef<THREE.Object3D[]>([]);
 
-  const [playerHealth, setPlayerHealth] = useState<number>(3);
+  const [playerHealth, setPlayerHealth] = useState<number>(5);
   const takePlayerDamage = () => {
     setPlayerHealth(Math.max(0, playerHealth - 1));
   };
