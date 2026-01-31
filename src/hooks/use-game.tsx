@@ -17,9 +17,15 @@ interface GameContextType {
   playerHealth: number;
   takePlayerDamage: () => void;
   healPlayer: () => void;
+  resetPlayer: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
+const initialPlayerSetUp = {
+  position: { x: 0, y: 0, z: 0 },
+  speedMultiplier: 1,
+  playerHealth: 3,
+};
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const { switchScene } = useSceneManager();
@@ -45,6 +51,12 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setPlayerHealth(Math.max(0, playerHealth + 1));
   };
 
+  const resetPlayer = () => {
+    setPlayerPosition(initialPlayerSetUp.position);
+    setSpeedMultiplier(initialPlayerSetUp.speedMultiplier);
+    setPlayerHealth(initialPlayerSetUp.playerHealth);
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -56,6 +68,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         playerHealth,
         takePlayerDamage,
         healPlayer,
+        resetPlayer,
       }}
     >
       {children}

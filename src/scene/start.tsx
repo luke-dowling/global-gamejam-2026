@@ -1,13 +1,20 @@
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
 import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import { VenetianMask } from "lucide-react";
+import { useGame } from "../hooks/use-game";
 
 export default function Start() {
   const { switchScene } = useSceneManager();
+  const { resetPlayer } = useGame();
   const pressSpaceRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    resetPlayer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useControls({
     keyboard: {
