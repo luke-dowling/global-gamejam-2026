@@ -1,6 +1,8 @@
 import { useLevelManager } from "./components/level-manager/use-level-manager";
 import UIElement from "./components/ui-element";
 import { useGame } from "./hooks/use-game";
+import healthHeart from "./assets/status-ui-health-heart.png";
+import healthDamage from "./assets/status-ui-health-lost.png";
 
 export default function UI() {
   const { activeLevelName } = useLevelManager();
@@ -19,7 +21,12 @@ export default function UI() {
         </div>
         <div className="border rounded-lg bg-white flex p-4 m-4 gap-2 items-center">
           {healthStates.map((state, index) => (
-            <div key={index}>{state}</div>
+            <img
+              key={index}
+              src={state === "healthy" ? healthHeart : healthDamage}
+              alt={state}
+              className="w-8 h-8"
+            />
           ))}
         </div>
         <div className="border rounded-lg bg-white flex flex-col p-4 m-4">
