@@ -1,3 +1,4 @@
+import { useGame } from "../../hooks/use-game";
 import { usePlayerSpeed } from "../../hooks/use-player-speed";
 import Collectable from "../collectable";
 
@@ -17,8 +18,10 @@ export default function SpeedUp({
   onCollect: onCollectCallback,
 }: SpeedUpProps) {
   const { applySpeedBoost } = usePlayerSpeed();
+  const { updateGameEventLog } = useGame();
 
   function onCollect() {
+    updateGameEventLog("Speed Increase!");
     applySpeedBoost(speedMultiplier, duration);
     if (onCollectCallback && id) {
       onCollectCallback(id);

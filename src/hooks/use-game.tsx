@@ -18,6 +18,8 @@ interface GameContextType {
   takePlayerDamage: () => void;
   healPlayer: () => void;
   resetPlayer: () => void;
+  gameEventLog: string[];
+  updateGameEventLog: (log: string) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -25,10 +27,25 @@ const initialPlayerSetUp = {
   position: { x: 0, y: 0, z: 0 },
   speedMultiplier: 1,
   playerHealth: 3,
+  gameEventLog: [],
 };
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const { switchScene } = useSceneManager();
+
+  // gamer logger
+  const [gameEventLog, setGameEventLog] = useState<string[]>(
+    initialPlayerSetUp.gameEventLog
+  );
+  const updateGameEventLog = (log: string) => {
+    setGameEventLog((prev) => {
+      const newLog = [...prev, log];
+      // Keep only the last 3 logs
+      return newLog.length > 3 ? newLog.slice(-3) : newLog;
+    });
+  };
+
+  // player config
   const [playerPosition, setPlayerPosition] = useState<PlayerPosition>({
     x: 0,
     y: 0,
@@ -39,6 +56,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [playerHealth, setPlayerHealth] = useState<number>(5);
   const takePlayerDamage = () => {
+    updateGameEventLog("Damage: 1 point");
     setPlayerHealth(Math.max(0, playerHealth - 1));
   };
 
@@ -47,7 +65,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       switchScene("gameOver");
     }
   }, [playerHealth, switchScene]);
+
   const healPlayer = () => {
+    updateGameEventLog("Heal: 1 point");
     setPlayerHealth(Math.max(0, playerHealth + 1));
   };
 
@@ -55,6 +75,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setPlayerPosition(initialPlayerSetUp.position);
     setSpeedMultiplier(initialPlayerSetUp.speedMultiplier);
     setPlayerHealth(initialPlayerSetUp.playerHealth);
+    setGameEventLog([]);
   };
 
   return (
@@ -69,6 +90,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         takePlayerDamage,
         healPlayer,
         resetPlayer,
+        gameEventLog,
+        updateGameEventLog,
       }}
     >
       {children}
