@@ -58,10 +58,15 @@ export default function Player() {
 
   useFrame((_, delta) => {
     const speed = 5;
-    const vx = velocityRef.current.x;
-    const vy = velocityRef.current.y;
+    let vx = velocityRef.current.x;
+    let vy = velocityRef.current.y;
 
-    if (vx !== 0 || vy !== 0) {
+    // Normalize velocity to always have magnitude 0 or 1
+    const magnitude = Math.sqrt(vx * vx + vy * vy);
+    if (magnitude > 0) {
+      vx = vx / magnitude;
+      vy = vy / magnitude;
+
       movePlayer({
         x: playerPosition.x + vx * speed * delta,
         y: playerPosition.y - vy * speed * delta,
