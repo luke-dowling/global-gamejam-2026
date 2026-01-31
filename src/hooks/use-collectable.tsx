@@ -3,20 +3,18 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGame } from "./use-game";
 import { isColliding } from "../utils/collision";
-import coinSound from "../assets/audio/effects/retro-coin.mp3";
+import { useSound } from "./use-audio";
 
 interface UseCollectableOptions {
   onCollect?: () => void;
 }
-
-const audio = new Audio(coinSound);
 
 export function useCollectable(options?: UseCollectableOptions) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [isCollected, setIsCollected] = useState(false);
   const { playerPosition } = useGame();
   const hasCollectedRef = useRef(false);
-  const audioRef = useRef<HTMLAudioElement>(audio);
+  const audio = useSound("coinSound");
 
   useFrame(() => {
     if (meshRef.current && !hasCollectedRef.current) {
@@ -35,10 +33,7 @@ export function useCollectable(options?: UseCollectableOptions) {
         setIsCollected(true);
 
         // Play collection sound
-        audioRef.current.currentTime = 0;
-        audioRef.current.play().catch((error) => {
-          console.error("Failed to play sound:", error);
-        });
+        audio.play();
 
         if (options?.onCollect) {
           options.onCollect();

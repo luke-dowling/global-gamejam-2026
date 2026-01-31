@@ -46,7 +46,7 @@ export function usePreloadTextures() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // useTexture with an object preloads all textures and returns them by key
-  const textures = useTexture(GAME_IMAGES) as GameTextures;
+  const textures = useTexture(GAME_IMAGES);
 
   // Configure textures once after loading
   useEffect(() => {
