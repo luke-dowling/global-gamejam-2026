@@ -15,6 +15,7 @@ interface Bounds {
 interface CollectableConfig {
   healthPotions: number;
   speedUps: number;
+  vaccinationImmunities: number;
 }
 
 interface RespawningCollectablesConfig {
@@ -98,6 +99,10 @@ export function useRespawningCollectables({
     generateInitialCollectables(collectableConfig.speedUps)
   );
 
+  const [vaccinationImmunities, setVaccinationImmunities] = useState<
+    CollectableItem[]
+  >(() => generateInitialCollectables(collectableConfig.vaccinationImmunities));
+
   const handleHealthPotionCollect = useCallback(
     (id: string) => {
       setHealthPotions((prev) => prev.filter((item) => item.id !== id));
@@ -132,10 +137,29 @@ export function useRespawningCollectables({
     [generateRandomPosition, respawnDelay]
   );
 
+  const handleVaccinationImmunityCollect = useCallback(
+    (id: string) => {
+      setVaccinationImmunities((prev) => prev.filter((item) => item.id !== id));
+
+      setTimeout(() => {
+        setVaccinationImmunities((prev) => [
+          ...prev,
+          {
+            id: generateId(),
+            position: generateRandomPosition(),
+          },
+        ]);
+      }, respawnDelay);
+    },
+    [generateRandomPosition, respawnDelay]
+  );
+
   return {
     healthPotions,
     speedUps,
+    vaccinationImmunities,
     onHealthPotionCollect: handleHealthPotionCollect,
     onSpeedUpCollect: handleSpeedUpCollect,
+    onVaccinationImmunityCollect: handleVaccinationImmunityCollect,
   };
 }

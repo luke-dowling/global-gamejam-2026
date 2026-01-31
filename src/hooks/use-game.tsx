@@ -20,6 +20,8 @@ interface GameContextType {
   resetPlayer: () => void;
   gameEventLog: string[];
   updateGameEventLog: (log: string) => void;
+  isPlayerImmuneToDamage: boolean;
+  setIsPlayerImmuneToDamage: (bool: boolean) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -55,9 +57,15 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const obstacleRefs = useRef<THREE.Object3D[]>([]);
 
   const [playerHealth, setPlayerHealth] = useState<number>(5);
+  const [isPlayerImmuneToDamage, setIsPlayerImmuneToDamage] = useState(false);
+
   const takePlayerDamage = () => {
-    updateGameEventLog("Damage: 1 point");
-    setPlayerHealth(Math.max(0, playerHealth - 1));
+    if (isPlayerImmuneToDamage) {
+      return;
+    } else {
+      updateGameEventLog("Damage: 1 point");
+      setPlayerHealth(Math.max(0, playerHealth - 1));
+    }
   };
 
   useEffect(() => {
@@ -92,6 +100,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         resetPlayer,
         gameEventLog,
         updateGameEventLog,
+        isPlayerImmuneToDamage,
+        setIsPlayerImmuneToDamage,
       }}
     >
       {children}

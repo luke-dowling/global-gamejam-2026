@@ -37,6 +37,7 @@ export default function Player() {
     obstacleRefs,
     speedMultiplier,
     playerHealth,
+    isPlayerImmuneToDamage,
   } = useGame();
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const velocityRef = useRef(velocity);
@@ -46,6 +47,8 @@ export default function Player() {
   const [facingDirection, setFacingDirection] = useState<"left" | "right">(
     "left"
   );
+  const [showImmunityBubble, setShowImmunityBubble] = useState(false);
+  const immunityBubbleRef = useRef<THREE.Mesh>(null);
   const { playAnimation, updateFrame } = useAnimation(
     spriteSheet,
     idleAnimation
@@ -75,6 +78,12 @@ export default function Player() {
     }
     previousHealthRef.current = playerHealth;
   }, [playerHealth]);
+
+  // Update character when immune to damage (via vaccination)
+  useEffect(() => {
+    console.log("Immunity state changed:", isPlayerImmuneToDamage);
+    setShowImmunityBubble(isPlayerImmuneToDamage);
+  }, [isPlayerImmuneToDamage]);
 
   useControls({
     keyboard: {
@@ -121,6 +130,12 @@ export default function Player() {
 
     const magnitude = Math.sqrt(vx * vx + vy * vy);
     const isMoving = magnitude > 0;
+
+    // Animate immunity bubble with pulsing effect
+    if (immunityBubbleRef.current && showImmunityBubble) {
+      const pulseScale = 1 + Math.sin(Date.now() * 0.005) * 0.1;
+      immunityBubbleRef.current.scale.set(pulseScale, pulseScale, 1);
+    }
 
     // Track horizontal movement direction for mirroring
     if (vx > 0) {
@@ -183,6 +198,26 @@ export default function Player() {
 
   return (
     <>
+      {/* Immunity bubble/shield */}
+      {showImmunityBubble && (
+        <mesh
+          ref={immunityBubbleRef}
+          position={[
+            playerPosition.x,
+            playerPosition.y,
+            playerPosition.z + 0.1,
+          ]}
+        >
+          <circleGeometry args={[1.2, 32]} />
+          <meshBasicMaterial
+            color="#1b3ae9"
+            transparent
+            opacity={0.5}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      )}
+
       <mesh
         ref={playerMeshRef}
         name="player-mesh"

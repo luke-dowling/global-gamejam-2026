@@ -3,12 +3,13 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import floorImage from "../../../assets/floor.png";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
-import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
 import { followPlayer } from "../../../utils/movement";
 import HealingPotion from "../../collectables/healing-potion";
 import SpeedUp from "../../collectables/speed-up";
 import Enemy from "../../enemy";
 import Obstacle from "../../obstacle";
+import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
+import VaccinationImmunity from "../../collectables/vaccination-immunity";
 
 const obstacleConfigs = [
   { position: [3, 0] as [number, number], size: [2, 2] as [number, number] },
@@ -25,13 +26,23 @@ const obstacleConfigs = [
 ];
 
 export default function Level1() {
-  const { healthPotions, speedUps, onHealthPotionCollect, onSpeedUpCollect } =
-    useRespawningCollectables({
-      obstacles: obstacleConfigs,
-      bounds: { minX: -10, maxX: 10, minY: -10, maxY: 10 },
-      collectableConfig: { healthPotions: 3, speedUps: 3 },
-      respawnDelay: 5000,
-    });
+  const {
+    healthPotions,
+    speedUps,
+    vaccinationImmunities,
+    onHealthPotionCollect,
+    onSpeedUpCollect,
+    onVaccinationImmunityCollect,
+  } = useRespawningCollectables({
+    obstacles: obstacleConfigs,
+    bounds: { minX: -10, maxX: 10, minY: -10, maxY: 10 },
+    collectableConfig: {
+      healthPotions: 3,
+      speedUps: 3,
+      vaccinationImmunities: 1,
+    },
+    respawnDelay: 5000,
+  });
 
   const floorTexture = useTexture(floorImage);
   const { enemies, removeEnemy } = useEnemySpawner({
@@ -86,6 +97,15 @@ export default function Level1() {
           id={potion.id}
           position={[potion.position[0], potion.position[1]]}
           onCollect={onHealthPotionCollect}
+        />
+      ))}
+
+      {vaccinationImmunities.map((immunity) => (
+        <VaccinationImmunity
+          key={immunity.id}
+          id={immunity.id}
+          position={[immunity.position[0], immunity.position[1]]}
+          onCollect={onVaccinationImmunityCollect}
         />
       ))}
 
