@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import coinSound from "../assets/audio/effects/retro-coin.mp3";
@@ -100,12 +101,27 @@ export function useSound(soundKey: keyof GameAudio) {
 
   const play = useCallback(async () => {
     if (audioElement) {
-      // Use the original element directly (don't clone) so loop works correctly
-      audioElement.currentTime = 0;
-      try {
-        await audioElement.play();
-      } catch (error) {
-        console.error("Failed to play sound:", error);
+      // If the audio is set to loop, use the original element (for background music)
+      // Otherwise clone it to allow simultaneous playback (for sound effects)
+      if (audioElement.loop) {
+        // Don't restart if already playing
+        if (audioElement.paused) {
+          try {
+            await audioElement.play();
+          } catch (error) {
+            console.error("Failed to play sound:", error);
+          }
+        }
+      } else {
+        // Clone the audio element to allow simultaneous playback
+        const clone = audioElement.cloneNode() as HTMLAudioElement;
+        clone.volume = audioElement.volume;
+        clone.playbackRate = audioElement.playbackRate;
+        try {
+          await clone.play();
+        } catch (error) {
+          console.error("Failed to play sound:", error);
+        }
       }
     }
   }, [audioElement]);
@@ -150,12 +166,15 @@ export function useSound(soundKey: keyof GameAudio) {
     [audioElement]
   );
 
-  return {
-    play,
-    pause,
-    stop,
-    setVolume,
-    setPlaybackRate,
-    setLoop,
-  };
+  return useMemo(
+    () => ({
+      play,
+      pause,
+      stop,
+      setVolume,
+      setPlaybackRate,
+      setLoop,
+    }),
+    [play, pause, stop, setVolume, setPlaybackRate, setLoop]
+  );
 }
