@@ -7,11 +7,12 @@ import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
 import Cougher from "../../enemies/cougher";
 import Walker from "../../enemies/walker";
-import Obstacle from "../../obstacle";
 import { boundsAroundPlayer } from "../../../collectable-utils";
 import { useGame } from "../../../hooks/use-game";
+import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
+import type { ObstacleConfig, ObstacleType } from "../../../types";
 
-const obstacleConfigs = [
+const obstacleConfigs1 = [
   { position: [3, 0] as [number, number], size: [2, 2] as [number, number] },
   {
     position: [-4, 2] as [number, number],
@@ -24,10 +25,24 @@ const obstacleConfigs = [
   },
   { position: [5, -2] as [number, number], size: [2, 2] as [number, number] },
 ];
+const TYPES: ObstacleType[] = ["fence", "well", "puddle", "box"];
+
+function randInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomPointInRing(minDist: number, maxDist: number): [number, number] {
+  const angle = Math.random() * Math.PI * 2;
+
+  // Uniform area distribution in an annulus:
+  const r2 =
+    minDist * minDist + Math.random() * (maxDist * maxDist - minDist * minDist);
+  const r = Math.sqrt(r2);
+
+  return [Math.cos(angle) * r, Math.sin(angle) * r];
+}
 
 export default function LevelCovid() {
   const { playerPosition } = useGame();
-
   const CHUNK_SIZE = 32;
 
   const cx = Math.floor(playerPosition.x / CHUNK_SIZE);
@@ -48,7 +63,7 @@ export default function LevelCovid() {
     onSpeedUpCollect,
     onVaccinationImmunityCollect,
   } = useRespawningCollectables({
-    obstacles: obstacleConfigs,
+    obstacles: obstacleConfigs1,
     bounds: bounds,
     collectableConfig: {
       healthPotions: 1,
@@ -65,6 +80,15 @@ export default function LevelCovid() {
     return texture;
   }, [textures]);
 
+  const MIN_DIST = 4;
+  const MAX_DIST = 20;
+  const [dx, dy] = randomPointInRing(MAX_DIST, MIN_DIST);
+  const position: [number, number, number] = [
+    playerPosition.x + dx,
+    playerPosition.y + dy,
+    0,
+  ];
+
   const { enemies, removeEnemy } = useEnemySpawner({
     initialSpawnInterval: 1,
     enemyTypes: [{ component: Cougher }, { component: Walker }],
@@ -77,6 +101,19 @@ export default function LevelCovid() {
     ],
   });
 
+  const count = 20;
+  const obstacleConfigs = useMemo<ObstacleConfig[]>(() => {
+    return Array.from({ length: count }, (_, i) => {
+      const type = TYPES[randInt(0, TYPES.length - 1)];
+      return {
+        id: `obs-${i}-${crypto.randomUUID?.() ?? Math.random().toString(16).slice(2)}`,
+        type,
+        position,
+        size: [2, 2],
+      };
+    });
+  }, [count]);
+
   return (
     <>
       {/* Floor plane */}
@@ -84,15 +121,24 @@ export default function LevelCovid() {
         <planeGeometry args={[32, 32]} />
         <meshBasicMaterial map={floorTexture} />
       </mesh>
-
-      {obstacleConfigs.map((config, index) => (
+      {obstacleConfigs.map((config) => {
+        const Comp = OBSTACLE_REGISTRY[config.type];
+        return (
+          <Comp
+            key={config.id}
+            position={[config.position[0], config.position[1]]}
+            size={config.size}
+          />
+        );
+      })}
+      {/* {obstacleConfigs.map((config, index) => (
         <Obstacle
           key={index}
           position={config.position}
           size={config.size}
           color={["#ff6b6b", "#51cf66", "#339af0", "#ffd43b", "#f783ac"][index]}
         />
-      ))}
+      ))} */}
 
       {speedUps.map((speedUp) => (
         <SpeedUp

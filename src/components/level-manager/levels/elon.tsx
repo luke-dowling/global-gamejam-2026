@@ -84,12 +84,7 @@ export default function LevelElon() {
       </mesh>
 
       {obstacleConfigs.map((config, index) => (
-        <Obstacle
-          key={index}
-          position={config.position}
-          size={config.size}
-          color={["#51cf66", "#339af0", "#ffd43b", "#f783ac"][index]}
-        />
+        <Obstacle key={index} position={config.position} size={config.size} />
       ))}
 
       {speedUps.map((speedUp) => (

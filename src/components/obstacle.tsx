@@ -1,18 +1,15 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useGame } from "../hooks/use-game";
+import type { Texture } from "three";
 
 interface ObstacleProps {
   position: [number, number];
-  size?: [number, number];
-  color?: string;
+  size?: readonly [number, number];
+  texture?: Texture;
 }
 
-export default function Obstacle({
-  position,
-  size = [2, 2],
-  color = "#ff6b6b",
-}: ObstacleProps) {
+export default function Obstacle({ position, size, texture }: ObstacleProps) {
   const { obstacleRefs } = useGame();
   const obstacleRef = useRef<THREE.Mesh>(null!);
 
@@ -34,7 +31,7 @@ export default function Obstacle({
   return (
     <mesh ref={obstacleRef} position={[position[0], position[1], 0]}>
       <planeGeometry args={size} />
-      <meshBasicMaterial color={color} />
+      <meshBasicMaterial map={texture} transparent />
     </mesh>
   );
 }

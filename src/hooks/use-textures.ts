@@ -14,6 +14,10 @@ import vaccine from "../assets/powerup-vaccine.png";
 import statusUiHealthHeart from "../assets/status-ui-health-heart.png";
 import elonTechBro from "../assets/elon_tech-bro-positive.png";
 import elonHater from "../assets/elon_hater-negative.png";
+import obstacleFence from "../assets/obstacle_1.png";
+import obstaclePuddle from "../assets/obstacle_2.png";
+import obstacleBox from "../assets/obstacle_3.png";
+import obstacleWell from "../assets/obstacle_4.png";
 
 // All game images - using actual imports to ensure bundler processes them
 export const GAME_IMAGES = {
@@ -30,6 +34,10 @@ export const GAME_IMAGES = {
   playerElon,
   elonTechBro,
   elonHater,
+  obstacleFence,
+  obstaclePuddle,
+  obstacleBox,
+  obstacleWell,
 };
 
 export type GameTextures = {

@@ -101,22 +101,7 @@ export default function LevelStroh() {
       </mesh>
 
       {obstacleConfigs.map((config, index) => (
-        <Obstacle
-          key={index}
-          position={config.position}
-          size={config.size}
-          color={
-            [
-              "#51cf66",
-              "#339af0",
-              "#ffd43b",
-              "#f783ac",
-              "#ff6b6b",
-              "#845ef7",
-              "#20c997",
-            ][index]
-          }
-        />
+        <Obstacle key={index} position={config.position} size={config.size} />
       ))}
 
       {speedUps.map((speedUp) => (
