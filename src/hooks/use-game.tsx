@@ -62,6 +62,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [playerHealth, setPlayerHealth] = useState<number>(5);
   const [isPlayerImmuneToDamage, setIsPlayerImmuneToDamage] = useState(false);
   const [playerPoints, setPlayerPoints] = useState(0);
+  console.log("playerPoints", playerPoints);
 
   const addPlayerPoints = () => {
     setPlayerPoints((prev) => Math.max(0, prev + 100));
@@ -73,7 +74,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       updateGameEventLog("Damage: 1 point");
       setPlayerHealth(Math.max(0, playerHealth - 1));
-      setPlayerPoints((prev) => Math.max(0, prev - 100));
+      setPlayerPoints((prev) => prev - 100);
     }
   };
 
@@ -95,6 +96,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setSpeedMultiplier(initialPlayerSetUp.speedMultiplier);
     setPlayerHealth(initialPlayerSetUp.playerHealth);
     setGameEventLog([]);
+    setPlayerPoints(0);
   };
 
   return (
