@@ -6,8 +6,10 @@ import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
 import { useGame } from "../hooks/use-game";
+import { useHighscores } from "../highscore-store";
 
 export default function Highscore() {
+  const highscores = useHighscores((s) => s.highscores);
   const { switchScene } = useSceneManager();
   const { resetPlayer } = useGame();
   const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
@@ -64,16 +66,25 @@ export default function Highscore() {
             <div className="border rounded-lg text-2xl">
               <table>
                 <thead>
-                  <th className="w-12 px-3 py-2">#</th>
-                  <th className="px-3 py-2">Player</th>
-                  <th className="px-3 py-2">Score</th>
+                  <tr className="border-b border-slate-700 text-slate-300">
+                    <th className="px-3 py-2 text-left">#</th>
+                    <th className="px-3 py-2 text-left">Name</th>
+                    <th className="px-3 py-2 text-right">Score</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="w-12 px-3 py-2 text-right">1</td>
-                    <td className="px-3 py-2">foo bar</td>
-                    <td className="px-3 py-2">42</td>
-                  </tr>
+                  {highscores.map((entry, index) => (
+                    <tr
+                      key={`${entry.name}-${index}`}
+                      className="border-b border-slate-800 last:border-none"
+                    >
+                      <td className="px-3 py-2 text-slate-400">{index + 1}</td>
+                      <td className="px-3 py-2 text-white">{entry.name}</td>
+                      <td className="px-3 py-2 text-right font-mono text-emerald-400">
+                        {entry.points}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

@@ -2,16 +2,34 @@ import { Skull } from "lucide-react";
 import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
+import { useHighscores } from "../highscore-store";
+import type { SceneName } from "../components/scene-manager";
+import { useState } from "react";
 
 export default function GameOver() {
   const { switchScene } = useSceneManager();
-
+  const [hasError, setHasError] = useState(false);
+  const [name, setName] = useState("");
   useControls({
     keyboard: {
-      " ": () => switchScene("game"),
-      Enter: () => switchScene("game"),
+      " ": () => handleContinue("highscore"),
+      Enter: () => handleContinue("highscore"),
     },
   });
+  const addHighscore = useHighscores((s) => s.addHighscore);
+  const handleContinue = (scene: SceneName) => {
+    if (!name.trim()) {
+      setHasError(true);
+      return;
+    }
+    setHasError(false);
+    addHighscore({
+      name: name.trim(),
+      points: Math.floor(Math.random() * 20),
+    });
+
+    switchScene(scene);
+  };
 
   return (
     <UIElement>
@@ -35,17 +53,28 @@ export default function GameOver() {
           </section>
           <section className="flex justify-center gap-3 py-3 items-center">
             <input
-              className="border rounded-lg text-center text-2xl p-2"
+              className={[
+                "rounded-md border px-3 py-2 text-white outline-none transition-colors",
+                "bg-slate-900",
+                hasError
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-slate-600 focus:border-emerald-400",
+              ].join(" ")}
               placeholder="enter name for scoreboard"
               type="text"
+              onChange={(e) => {
+                setName(e.target.value);
+                if (hasError) setHasError(false);
+              }}
+              autoFocus
             />
           </section>
         </header>
 
         <div className="flex gap-8">
           <button
-            onClick={() => switchScene("highscore")}
-            onTouchEnd={() => switchScene("highscore")}
+            onClick={() => handleContinue("highscore")}
+            onTouchEnd={() => handleContinue("highscore")}
             className="group relative border-2 border-white/30 bg-white/5 hover:bg-white/20 hover:border-white/60 transition-all duration-300 px-8 py-4 rounded-lg backdrop-blur-sm cursor-pointer flex flex-col justify-center items-center"
           >
             <div className="text-2xl font-light uppercase tracking-wider text-center">
@@ -55,8 +84,8 @@ export default function GameOver() {
           </button>
 
           <button
-            onClick={() => switchScene("level-select")}
-            onTouchEnd={() => switchScene("level-select")}
+            onClick={() => handleContinue("level-select")}
+            onTouchEnd={() => handleContinue("level-select")}
             className="group relative border-2 border-white/30 bg-white/5 hover:bg-white/20 hover:border-white/60 transition-all duration-300 px-8 py-4 rounded-lg backdrop-blur-sm cursor-pointer flex flex-col justify-center items-center"
           >
             <div className="text-2xl font-light uppercase tracking-wider text-center">
