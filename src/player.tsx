@@ -2,6 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import * as THREE from "three";
+import { useLevelManager } from "./components/level-manager/use-level-manager";
 import {
   useAnimation,
   type Animation,
@@ -11,7 +12,6 @@ import { useControls } from "./hooks/use-controls";
 import { useGame } from "./hooks/use-game";
 import { useTextures } from "./hooks/use-textures";
 import { isColliding } from "./utils/collision";
-import { useLevelManager } from "./components/level-manager/use-level-manager";
 
 const spriteSheet: SpriteSheetData = {
   url: "", // URL not needed anymore
@@ -66,7 +66,7 @@ export default function Player() {
         // textureBase = textures.playerCovid
         break;
       case "elon":
-        // textureBase = textures.playerElon;
+        textureBase = textures.playerElon;
         break;
       case "stroh":
         // textureBase = textures.playerStroh;
