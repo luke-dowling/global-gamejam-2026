@@ -62,15 +62,13 @@ export default function Player() {
   const characterTexture = useMemo(() => {
     let textureBase = textures.playerSprites;
     switch (activeLevelName) {
-      case "covid":
-        // textureBase = textures.playerCovid
-        break;
       case "elon":
         textureBase = textures.playerElon;
         break;
       case "stroh":
-        // textureBase = textures.playerStroh;
+        textureBase = textures.playerStroh;
         break;
+      case "covid":
       default:
         textureBase = textures.playerSprites;
     }

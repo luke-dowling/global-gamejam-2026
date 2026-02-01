@@ -73,7 +73,7 @@ function StartContent() {
         </header>
         <section className="flex items-baseline justify-end-safe gap-24">
           <div
-            className="w-96 h-96 sprite-frame sprite-animate flex-shrink-0"
+            className="w-96 h-96 sprite-frame sprite-animate shrink-0"
             style={{
               backgroundImage: `url(${playerSpritesImage})`,
               backgroundPosition: "0% 0%",

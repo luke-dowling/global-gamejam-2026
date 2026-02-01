@@ -26,6 +26,7 @@ import obstacleStrawBall from "../assets/straw_obstacle_1.png";
 import obstacleStrawRoll from "../assets/straw_obstacle_2.png";
 import obstacleStrawCube from "../assets/straw_obstacle_3.png";
 import obstacleStrawPile from "../assets/straw_obstacle_4.png";
+import playerStroh from "../assets/electrician.png";
 
 import maga from "../assets/powerup-maga.png";
 import coin from "../assets/powerup-coin.png";
@@ -61,6 +62,7 @@ export const GAME_IMAGES = {
   maga,
   coin,
   powderbag,
+  playerStroh,
 };
 
 export type GameTextures = {
