@@ -1,26 +1,75 @@
 import { useMemo } from "react";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
+import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
 import { useTextures } from "../../../hooks/use-textures";
+import HealingPotion from "../../collectables/healing-potion";
 import SpeedUp from "../../collectables/speed-up";
+import VaccinationImmunity from "../../collectables/vaccination-immunity";
 import Hater from "../../enemies/hater";
 import TechBro from "../../enemies/tech-bro";
 import Obstacle from "../../obstacle";
+import { boundsAroundPlayer } from "../../../collectable-utils";
+import { useGame } from "../../../hooks/use-game";
+
+const obstacleConfigs = [
+  { position: [-8, 8] as [number, number], size: [2, 2] as [number, number] },
+  { position: [8, 8] as [number, number], size: [2, 2] as [number, number] },
+  { position: [-8, -8] as [number, number], size: [2, 2] as [number, number] },
+  { position: [8, -8] as [number, number], size: [2, 2] as [number, number] },
+];
 
 export default function LevelElon() {
+  const { playerPosition } = useGame();
+
+  const CHUNK_SIZE = 32;
+
+  const cx = Math.floor(playerPosition.x / CHUNK_SIZE);
+  const cy = Math.floor(playerPosition.y / CHUNK_SIZE);
+
+  const bounds = useMemo(() => {
+    // center of the current chunk
+    const centerX = (cx + 0.5) * CHUNK_SIZE;
+    const centerY = (cy + 0.5) * CHUNK_SIZE;
+    return boundsAroundPlayer(centerX, centerY, 10);
+  }, [cx, cy]);
+
+  const {
+    healthPotions,
+    speedUps,
+    vaccinationImmunities,
+    onHealthPotionCollect,
+    onSpeedUpCollect,
+    onVaccinationImmunityCollect,
+  } = useRespawningCollectables({
+    obstacles: obstacleConfigs,
+    bounds: bounds,
+    collectableConfig: {
+      healthPotions: 1,
+      speedUps: 2,
+      vaccinationImmunities: 2,
+    },
+    respawnDelay: 8000,
+  });
+
   const textures = useTextures();
   const floorTexture = useMemo(() => {
     const texture = textures.floor.clone();
-    texture.repeat.set(40, 40);
+    texture.repeat.set(32, 32);
     return texture;
   }, [textures]);
 
   const { enemies, removeEnemy } = useEnemySpawner({
-    initialSpawnInterval: 1.5,
-    enemyTypes: [{ component: TechBro }, { component: Hater }],
+    initialSpawnInterval: 0.7,
+    enemyTypes: [{ component: TechBro }, { component: Hater, weight: 3 }],
     initialEnemies: [
       {
         id: 1,
         position: [5, 5],
+        type: { component: Hater },
+      },
+      {
+        id: 2,
+        position: [-5, -5],
         type: { component: TechBro },
       },
     ],
@@ -30,18 +79,46 @@ export default function LevelElon() {
     <>
       {/* Floor plane */}
       <mesh position={[0, 0, -1]}>
-        <planeGeometry args={[40, 40]} />
+        <planeGeometry args={[32, 32]} />
         <meshBasicMaterial map={floorTexture} />
       </mesh>
 
-      <Obstacle position={[-8, 8]} size={[2, 2]} color="#51cf66" />
-      <Obstacle position={[8, 8]} size={[2, 2]} color="#339af0" />
-      <Obstacle position={[-8, -8]} size={[2, 2]} color="#ffd43b" />
-      <Obstacle position={[8, -8]} size={[2, 2]} color="#f783ac" />
+      {obstacleConfigs.map((config, index) => (
+        <Obstacle
+          key={index}
+          position={config.position}
+          size={config.size}
+          color={["#51cf66", "#339af0", "#ffd43b", "#f783ac"][index]}
+        />
+      ))}
 
-      <SpeedUp position={[10, 10]} duration={5} speedMultiplier={2.5} />
-      <SpeedUp position={[-10, -10]} duration={4} speedMultiplier={3} />
-      <SpeedUp position={[0, -12]} duration={6} speedMultiplier={2} />
+      {speedUps.map((speedUp) => (
+        <SpeedUp
+          key={speedUp.id}
+          position={[speedUp.position[0], speedUp.position[1]]}
+          duration={3}
+          speedMultiplier={2}
+          onCollect={onSpeedUpCollect}
+        />
+      ))}
+
+      {healthPotions.map((potion) => (
+        <HealingPotion
+          key={potion.id}
+          id={potion.id}
+          position={[potion.position[0], potion.position[1]]}
+          onCollect={onHealthPotionCollect}
+        />
+      ))}
+
+      {vaccinationImmunities.map((immunity) => (
+        <VaccinationImmunity
+          key={immunity.id}
+          id={immunity.id}
+          position={[immunity.position[0], immunity.position[1]]}
+          onCollect={onVaccinationImmunityCollect}
+        />
+      ))}
 
       {enemies.map((enemy) => {
         const EnemyComponent = enemy.type.component;
