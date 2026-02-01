@@ -224,16 +224,34 @@ export default function Player() {
         z: playerPosition.z,
       };
 
-      // Temporarily move player to check collision
+      // Temporarily move player to check collision per axis
       if (playerMeshRef.current) {
         const originalPos = playerMeshRef.current.position.clone();
-        playerMeshRef.current.position.set(newPos.x, newPos.y, newPos.z);
 
-        // Check collision with all obstacles
-        let hasCollision = false;
+        // Check X-axis collision
+        let canMoveX = true;
+        playerMeshRef.current.position.set(
+          newPos.x,
+          originalPos.y,
+          originalPos.z
+        );
         for (const obstacle of obstacleRefs.current) {
           if (obstacle && isColliding(playerMeshRef.current, obstacle)) {
-            hasCollision = true;
+            canMoveX = false;
+            break;
+          }
+        }
+
+        // Check Y-axis collision
+        let canMoveY = true;
+        playerMeshRef.current.position.set(
+          originalPos.x,
+          newPos.y,
+          originalPos.z
+        );
+        for (const obstacle of obstacleRefs.current) {
+          if (obstacle && isColliding(playerMeshRef.current, obstacle)) {
+            canMoveY = false;
             break;
           }
         }
@@ -241,10 +259,14 @@ export default function Player() {
         // Revert position
         playerMeshRef.current.position.copy(originalPos);
 
-        // Only move if no collision
-        if (!hasCollision) {
-          movePlayer(newPos);
-        }
+        // Move on allowed axes only
+        const finalPos = {
+          x: canMoveX ? newPos.x : playerPosition.x,
+          y: canMoveY ? newPos.y : playerPosition.y,
+          z: playerPosition.z,
+        };
+
+        movePlayer(finalPos);
       } else {
         movePlayer(newPos);
       }
