@@ -67,6 +67,8 @@ export default function Enemy({
     return dyingAnimation.reduce((total, frame) => total + frame.duration, 0);
   }, [dyingAnimation]);
 
+  const { addPlayerPoints } = useGame();
+
   useFrame(({ scene }, delta) => {
     if (!enemyMeshRef.current) return;
 
@@ -78,6 +80,7 @@ export default function Enemy({
           playAnimation(dyingAnimation);
           dyingAnimationStartedRef.current = true;
           onDying?.();
+          addPlayerPoints();
         }
 
         updateFrame(delta, enemyTexture);

@@ -8,6 +8,7 @@ export default function UI() {
   const { activeLevelName } = useLevelManager();
   const { playerHealth } = useGame();
   const maxHealth = 5;
+  const { playerPoints } = useGame();
 
   const healthStates = Array.from({ length: maxHealth }, (_, index) =>
     index < playerHealth ? "healthy" : "damaged"
@@ -30,7 +31,7 @@ export default function UI() {
           ))}
         </div>
         <div className="border rounded-lg bg-white flex flex-col p-4 m-4">
-          <div>Score: 9000</div>
+          <div>Score: {playerPoints}</div>
         </div>
       </div>
     </UIElement>

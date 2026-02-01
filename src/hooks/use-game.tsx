@@ -22,6 +22,8 @@ interface GameContextType {
   updateGameEventLog: (log: string) => void;
   isPlayerImmuneToDamage: boolean;
   setIsPlayerImmuneToDamage: (bool: boolean) => void;
+  addPlayerPoints: () => void;
+  playerPoints: number;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -30,6 +32,7 @@ const initialPlayerSetUp = {
   speedMultiplier: 1,
   playerHealth: 5,
   gameEventLog: [],
+  playerPoints: 0,
 };
 
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
@@ -58,6 +61,11 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [playerHealth, setPlayerHealth] = useState<number>(5);
   const [isPlayerImmuneToDamage, setIsPlayerImmuneToDamage] = useState(false);
+  const [playerPoints, setPlayerPoints] = useState(0);
+
+  const addPlayerPoints = () => {
+    setPlayerPoints((prev) => Math.max(0, prev + 100));
+  };
 
   const takePlayerDamage = () => {
     if (isPlayerImmuneToDamage) {
@@ -65,6 +73,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       updateGameEventLog("Damage: 1 point");
       setPlayerHealth(Math.max(0, playerHealth - 1));
+      setPlayerPoints((prev) => Math.max(0, prev - 100));
     }
   };
 
@@ -104,6 +113,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         updateGameEventLog,
         isPlayerImmuneToDamage,
         setIsPlayerImmuneToDamage,
+        addPlayerPoints,
+        playerPoints,
       }}
     >
       {children}
