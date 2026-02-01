@@ -13,7 +13,7 @@ import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
 import type { ObstacleType } from "../../../types";
 import { useObstacleSpawner } from "../../../hooks/use-obstacle-spawner";
 
-const OBSTACLE_TYPES: ObstacleType[] = ["fence", "well", "puddle", "box"];
+const OBSTACLE_TYPES: ObstacleType[] = ["rocket", "tesla", "corp", "satelite"];
 
 export default function LevelElon() {
   const { playerPosition } = useGame();

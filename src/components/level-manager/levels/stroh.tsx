@@ -13,7 +13,7 @@ import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
 import type { ObstacleType } from "../../../types";
 import { useObstacleSpawner } from "../../../hooks/use-obstacle-spawner";
 
-const OBSTACLE_TYPES: ObstacleType[] = ["fence", "well", "puddle", "box"];
+const OBSTACLE_TYPES: ObstacleType[] = ["roll", "cube", "ball", "pile"];
 
 export default function LevelStroh() {
   const { playerPosition } = useGame();
