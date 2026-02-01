@@ -47,7 +47,7 @@ export default function LevelStroh() {
     obstacles: obstacles,
     bounds: bounds,
     collectableConfig: {
-      healthPotions: 0,
+      healthPotions: 1,
       speedUps: 1,
       vaccinationImmunities: 1,
     },

@@ -27,6 +27,7 @@ export default function HealingPotion({
         textureBase = textures.coin;
         break;
       case "stroh":
+        textureBase = textures.fusebox;
         break;
       default:
         textureBase = textures.healingPotion;
