@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
 import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
+import { useLevelManager } from "../level-manager/use-level-manager";
 
 interface HealingPotionProps {
   position: [number, number];
@@ -16,9 +17,21 @@ export default function HealingPotion({
 }: HealingPotionProps) {
   const { healPlayer } = useGame();
   const textures = useTextures();
+  const activeLevelName = useLevelManager();
   const healingPotionTexture = useMemo(() => {
-    const texture = textures.healingPotion.clone();
-    return texture;
+    let textureBase = textures.healingPotion;
+    switch (activeLevelName.activeLevelName) {
+      case "covid":
+        break;
+      case "elon":
+        textureBase = textures.coin;
+        break;
+      case "stroh":
+        break;
+      default:
+        textureBase = textures.healingPotion;
+    }
+    return textureBase;
   }, [textures]);
 
   function onCollect() {

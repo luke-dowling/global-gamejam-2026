@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
 import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
+import { useLevelManager } from "../level-manager/use-level-manager";
 
 interface SpeedUpProps {
   position: [number, number];
@@ -20,9 +21,21 @@ export default function SpeedUp({
 }: SpeedUpProps) {
   const { applySpeedBoost, updateGameEventLog } = useGame();
   const textures = useTextures();
+  const activeLevelName = useLevelManager();
   const speedUpTexture = useMemo(() => {
-    const texture = textures.speedUp.clone();
-    return texture;
+    let textureBase = textures.speedUp;
+    switch (activeLevelName.activeLevelName) {
+      case "covid":
+        break;
+      case "elon":
+        textureBase = textures.powderbag;
+        break;
+      case "stroh":
+        break;
+      default:
+        textureBase = textures.speedUp;
+    }
+    return textureBase;
   }, [textures]);
 
   function onCollect() {

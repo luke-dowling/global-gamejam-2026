@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
 import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
+import { useLevelManager } from "../level-manager/use-level-manager";
 
 interface VaccinationImmunityProps {
   position: [number, number];
@@ -16,9 +17,21 @@ export default function VaccinationImmunity({
 }: VaccinationImmunityProps) {
   const { applyImmunityBoost, updateGameEventLog } = useGame();
   const textures = useTextures();
+  const activeLevelName = useLevelManager();
   const vaccineTexture = useMemo(() => {
-    const texture = textures.vaccine.clone();
-    return texture;
+    let textureBase = textures.vaccine;
+    switch (activeLevelName.activeLevelName) {
+      case "covid":
+        break;
+      case "elon":
+        textureBase = textures.maga;
+        break;
+      case "stroh":
+        break;
+      default:
+        textureBase = textures.vaccine;
+    }
+    return textureBase;
   }, [textures]);
 
   function onCollect() {
