@@ -19,6 +19,7 @@ interface EnemyProps {
   speed: number;
   movementBehavior: MovementBehavior;
   onDestroy?: () => void;
+  onDying?: () => void;
   health?: number;
 }
 
@@ -31,6 +32,7 @@ export default function Enemy({
   speed,
   movementBehavior,
   onDestroy,
+  onDying,
 }: EnemyProps) {
   const { playerPosition, takePlayerDamage } = useGame();
   const enemyMeshRef = useRef<THREE.Mesh>(null!);
@@ -73,6 +75,7 @@ export default function Enemy({
         if (!dyingAnimationStartedRef.current) {
           playAnimation(dyingAnimation);
           dyingAnimationStartedRef.current = true;
+          onDying?.();
         }
 
         updateFrame(delta, enemyTexture);

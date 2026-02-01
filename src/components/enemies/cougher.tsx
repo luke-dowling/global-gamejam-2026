@@ -2,7 +2,9 @@ import type { SpriteSheetData } from "../../hooks/use-animation";
 import { type Animation } from "../../hooks/use-animation";
 import { followPlayer } from "../../utils/movement";
 import { useTextures } from "../../hooks/use-textures";
+import { useSound } from "../../hooks/use-audio";
 import Enemy from "../enemy";
+import { useState } from "react";
 
 type Props = {
   position: [number, number];
@@ -24,6 +26,15 @@ const dyingAnimation: Animation = [
 export default function Cougher({ position, onDestroy }: Props) {
   const textures = useTextures();
 
+  const [breatheSound] = useState(
+    (["breathe1", "breathe2", "breathe3"] as const)[
+      // eslint-disable-next-line react-hooks/purity
+      Math.floor(Math.random() * 3)
+    ]
+  );
+
+  const audio = useSound(breatheSound);
+
   const spriteSheet: SpriteSheetData = {
     texture: textures.cougherMale,
     tileWidth: 32,
@@ -42,6 +53,7 @@ export default function Cougher({ position, onDestroy }: Props) {
       dyingAnimation={dyingAnimation}
       movementBehavior={followPlayer}
       onDestroy={onDestroy}
+      onDying={() => audio.play()}
     />
   );
 }
