@@ -9,10 +9,6 @@
   font-display: swap;
 }
 
-@theme {
-  --font-pressStart: "Press Start 2P", monospace;
-}
-
 @layer utilities {
   .pixelated {
     image-rendering: pixelated;
@@ -54,6 +50,28 @@
     margin-top: 0.5em;
     padding-left: 2em;
   }
+
+  .title {
+    font-size: clamp(6rem, 12vw, 8rem);
+    color: #f5e6c8;
+    text-shadow:
+      4px 0 #c2412d,
+      -4px 0 #c2412d,
+      0 4px #c2412d,
+      0 -4px #c2412d,
+      4px 4px #9a2e1f;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+  }
+
+  .subtitle {
+    text-shadow:
+      2px 0 #c2412d,
+      -2px 0 #c2412d,
+      0 2px #c2412d,
+      0 -2px #c2412d;
+    color: #f5e6c8;
+  }
 }
 
 @keyframes spriteFrames {
@@ -88,7 +106,7 @@
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Press Start 2P", monospace;
   line-height: 1.5;
   font-weight: 400;
 

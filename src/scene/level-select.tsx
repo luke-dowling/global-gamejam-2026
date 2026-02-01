@@ -33,15 +33,15 @@ export default function Menu() {
 
   return (
     <UIElement>
-      <div className="flex flex-col justify-evenly items-center h-full">
+      <div className="flex flex-col justify-evenly items-center h-full font-pressStart">
         <header>
-          <h1 className="text-center uppercase text-8xl  tracking-wide font-bold text-white drop-shadow-lg py-5">
+          <h1 className="text-center uppercase tracking-wide py-5 title">
             Select your mask
           </h1>
           <section className="flex justify-center gap-3 py-3 items-center">
             <div className="h-2 w-2 rounded-[50%] bg-white"></div>
 
-            <h2 className="text-3xl font-light drop-shadow-lg uppercase tracking-wide">
+            <h2 className="text-2xl uppercase tracking-wide subtitle">
               Choose wisely
             </h2>
             <div className="h-2 w-2 rounded-[50%] bg-white opacity-85"></div>
