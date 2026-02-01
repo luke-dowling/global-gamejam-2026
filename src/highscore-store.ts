@@ -22,7 +22,7 @@ export const useHighscores = create<HighscoreState>()(
         set((state) => ({
           highscores: [...state.highscores, entry]
             .sort((a, b) => b.points - a.points)
-            .slice(0, 20), // keep top 20
+            .slice(0, 10), // keep top 10
         })),
 
       clearHighscores: () => set({ highscores: [] }),
