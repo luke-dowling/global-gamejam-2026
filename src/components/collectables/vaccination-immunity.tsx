@@ -14,7 +14,7 @@ export default function VaccinationImmunity({
   id,
   onCollect: onCollectCallback,
 }: VaccinationImmunityProps) {
-  const { setIsPlayerImmuneToDamage } = useGame();
+  const { applyImmunityBoost, updateGameEventLog } = useGame();
   const textures = useTextures();
   const vaccineTexture = useMemo(() => {
     const texture = textures.vaccine.clone();
@@ -22,11 +22,8 @@ export default function VaccinationImmunity({
   }, [textures]);
 
   function onCollect() {
-    // * player doesnt take any damage for 3 seconds
-    setIsPlayerImmuneToDamage(true);
-    setTimeout(() => {
-      setIsPlayerImmuneToDamage(false);
-    }, 3000);
+    updateGameEventLog("Immunity Active!");
+    applyImmunityBoost(3);
 
     if (onCollectCallback && id) {
       onCollectCallback(id);

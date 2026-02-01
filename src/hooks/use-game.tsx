@@ -14,6 +14,7 @@ interface GameContextType {
   obstacleRefs: React.MutableRefObject<THREE.Object3D[]>;
   speedMultiplier: number;
   setSpeedMultiplier: (multiplier: number) => void;
+  applySpeedBoost: (multiplier: number, duration: number) => void;
   playerHealth: number;
   takePlayerDamage: () => void;
   healPlayer: () => void;
@@ -22,6 +23,7 @@ interface GameContextType {
   updateGameEventLog: (log: string) => void;
   isPlayerImmuneToDamage: boolean;
   setIsPlayerImmuneToDamage: (bool: boolean) => void;
+  applyImmunityBoost: (duration: number) => void;
   addPlayerPoints: () => void;
   playerPoints: number;
   gameTime: number;
@@ -60,6 +62,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   });
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const obstacleRefs = useRef<THREE.Object3D[]>([]);
+  const speedBoostTimeoutRef = useRef<number | null>(null);
+  const immunityTimeoutRef = useRef<number | null>(null);
 
   const [playerHealth, setPlayerHealth] = useState<number>(5);
   const [isPlayerImmuneToDamage, setIsPlayerImmuneToDamage] = useState(false);
@@ -72,6 +76,38 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addPlayerPoints = () => {
     setPlayerPoints((prev) => Math.max(0, prev + 100));
+  };
+
+  const applySpeedBoost = (multiplier: number = 2, duration: number = 10) => {
+    // Clear any existing timeout
+    if (speedBoostTimeoutRef.current) {
+      clearTimeout(speedBoostTimeoutRef.current);
+    }
+
+    // Apply the speed boost
+    setSpeedMultiplier(multiplier);
+
+    // Reset to normal speed after duration
+    speedBoostTimeoutRef.current = setTimeout(() => {
+      setSpeedMultiplier(1);
+      speedBoostTimeoutRef.current = null;
+    }, duration * 1000) as unknown as number;
+  };
+
+  const applyImmunityBoost = (duration: number = 3) => {
+    // Clear any existing timeout
+    if (immunityTimeoutRef.current) {
+      clearTimeout(immunityTimeoutRef.current);
+    }
+
+    // Apply immunity
+    setIsPlayerImmuneToDamage(true);
+
+    // Remove immunity after duration
+    immunityTimeoutRef.current = setTimeout(() => {
+      setIsPlayerImmuneToDamage(false);
+      immunityTimeoutRef.current = null;
+    }, duration * 1000) as unknown as number;
   };
 
   const takePlayerDamage = () => {
@@ -114,6 +150,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         obstacleRefs,
         speedMultiplier,
         setSpeedMultiplier,
+        applySpeedBoost,
         playerHealth,
         takePlayerDamage,
         healPlayer,
@@ -122,6 +159,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         updateGameEventLog,
         isPlayerImmuneToDamage,
         setIsPlayerImmuneToDamage,
+        applyImmunityBoost,
         addPlayerPoints,
         playerPoints,
         gameTime,

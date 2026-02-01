@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useGame } from "../../hooks/use-game";
-import { usePlayerSpeed } from "../../hooks/use-player-speed";
 import { useTextures } from "../../hooks/use-textures";
 import Collectable from "../collectable";
 
@@ -19,8 +18,7 @@ export default function SpeedUp({
   id,
   onCollect: onCollectCallback,
 }: SpeedUpProps) {
-  const { applySpeedBoost } = usePlayerSpeed();
-  const { updateGameEventLog } = useGame();
+  const { applySpeedBoost, updateGameEventLog } = useGame();
   const textures = useTextures();
   const speedUpTexture = useMemo(() => {
     const texture = textures.speedUp.clone();
