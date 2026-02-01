@@ -51,9 +51,9 @@ export default function LevelCovid() {
     obstacles: obstacleConfigs,
     bounds: bounds,
     collectableConfig: {
-      healthPotions: 10,
-      speedUps: 10,
-      vaccinationImmunities: 1,
+      healthPotions: 1,
+      speedUps: 3,
+      vaccinationImmunities: 3,
     },
     respawnDelay: 5000,
   });
@@ -66,7 +66,7 @@ export default function LevelCovid() {
   }, [textures]);
 
   const { enemies, removeEnemy } = useEnemySpawner({
-    spawnInterval: 1,
+    initialSpawnInterval: 1,
     enemyTypes: [{ component: Cougher }, { component: Walker }],
     initialEnemies: [
       {

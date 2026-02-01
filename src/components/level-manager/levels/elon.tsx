@@ -15,7 +15,7 @@ export default function LevelElon() {
   }, [textures]);
 
   const { enemies, removeEnemy } = useEnemySpawner({
-    spawnInterval: 1.5,
+    initialSpawnInterval: 1.5,
     enemyTypes: [{ component: TechBro }, { component: Hater }],
     initialEnemies: [
       {

@@ -15,7 +15,7 @@ export default function LevelStroh() {
   }, [textures]);
 
   const { enemies, removeEnemy } = useEnemySpawner({
-    spawnInterval: 1.5,
+    initialSpawnInterval: 1.5,
     enemyTypes: [{ component: Cougher }, { component: Walker }],
     initialEnemies: [
       {

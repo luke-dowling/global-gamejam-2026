@@ -18,17 +18,19 @@ export type SpawnedEnemy = {
 };
 
 interface EnemySpawnerConfig {
-  spawnInterval: number;
+  initialSpawnInterval: number;
   enemyTypes: EnemyType[]; // Array of enemy types to spawn
   initialEnemies?: SpawnedEnemy[];
   screenBorder?: number;
+  intervalIncreaseRate?: number; // How much to decrease interval per second (default: 0.005)
 }
 
 export function useEnemySpawner({
   initialEnemies = [],
-  spawnInterval,
+  initialSpawnInterval,
   enemyTypes,
   screenBorder = 12,
+  intervalIncreaseRate = 0.005,
 }: EnemySpawnerConfig) {
   const [enemies, setEnemies] = useState<SpawnedEnemy[]>(initialEnemies);
   const { playerPosition } = useGame();
@@ -38,6 +40,7 @@ export function useEnemySpawner({
       : 1
   );
   const spawnTimerRef = useRef(0);
+  const currentSpawnIntervalRef = useRef(initialSpawnInterval);
 
   const removeEnemy = (id: number) => {
     setEnemies((prev) => prev.filter((enemy) => enemy.id !== id));
@@ -63,9 +66,15 @@ export function useEnemySpawner({
 
   // Spawn new enemies over time with increasing difficulty
   useFrame((_, delta) => {
+    // Gradually decrease spawn interval (increase difficulty)
+    currentSpawnIntervalRef.current = Math.max(
+      0,
+      currentSpawnIntervalRef.current - intervalIncreaseRate * delta
+    );
+
     spawnTimerRef.current += delta;
 
-    if (spawnTimerRef.current >= spawnInterval) {
+    if (spawnTimerRef.current >= currentSpawnIntervalRef.current) {
       spawnTimerRef.current = 0;
 
       const newId = nextIdRef.current++;
