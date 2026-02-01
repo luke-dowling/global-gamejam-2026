@@ -41,6 +41,7 @@ export function usePreloadAudio() {
   const [audio, setAudio] = useState<GameAudio | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
     const audioElements: Partial<GameAudio> = {};
     const loadPromises: Promise<void>[] = [];
 
@@ -64,12 +65,31 @@ export function usePreloadAudio() {
     // Wait for all audio to load
     Promise.all(loadPromises)
       .then(() => {
-        setAudio(audioElements as GameAudio);
-        setIsLoaded(true);
+        if (isMounted) {
+          setAudio(audioElements as GameAudio);
+          setIsLoaded(true);
+        }
       })
       .catch((error) => {
         console.error("Failed to preload audio:", error);
+        if (isMounted) {
+          // Still set the audio elements even if some failed to load
+          // This prevents the app from being stuck in loading state
+          setAudio(audioElements as GameAudio);
+          setIsLoaded(true);
+        }
       });
+
+    return () => {
+      isMounted = false;
+      // Clean up audio elements to prevent memory leaks
+      Object.values(audioElements).forEach((audio) => {
+        if (audio) {
+          audio.pause();
+          audio.src = "";
+        }
+      });
+    };
   }, []);
 
   return { isLoaded, audio };
@@ -83,7 +103,9 @@ export const AudioProvider = AudioContext.Provider;
 function useAudio() {
   const audio = useContext(AudioContext);
   if (!audio) {
-    throw new Error("useAudio must be used within an AudioProvider");
+    throw new Error(
+      "useAudio must be used within an AudioProvider. Make sure audio has finished loading before using this hook."
+    );
   }
   return audio;
 }
