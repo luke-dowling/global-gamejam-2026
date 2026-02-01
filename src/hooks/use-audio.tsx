@@ -17,6 +17,7 @@ import breathe3 from "../assets/audio/effects/breathe3.wav";
 import vaccine from "../assets/audio/effects/vaccine.wav";
 import speedBoost from "../assets/audio/effects/speed-boost.wav";
 import apple from "../assets/audio/effects/apple.wav";
+import hurt2 from "../assets/audio/effects/hurt2.wav";
 
 // All game audio files - using actual imports to ensure bundler processes them
 const GAME_AUDIO = {
@@ -31,6 +32,7 @@ const GAME_AUDIO = {
   vaccine,
   speedBoost,
   apple,
+  hurt2,
 };
 
 export type GameAudio = {

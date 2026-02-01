@@ -28,6 +28,7 @@ import obstacleStrawCube from "../assets/straw_obstacle_3.png";
 import obstacleStrawPile from "../assets/straw_obstacle_4.png";
 import playerStroh from "../assets/electrician.png";
 import fusebox from "../assets/straw_fuse-box.png";
+import ladyOfEase from "../assets/lady-of-ease.png";
 
 import maga from "../assets/powerup-maga.png";
 import coin from "../assets/powerup-coin.png";
@@ -65,6 +66,7 @@ export const GAME_IMAGES = {
   powderbag,
   playerStroh,
   fusebox,
+  ladyOfEase,
 };
 
 export type GameTextures = {

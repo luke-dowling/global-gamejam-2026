@@ -1,17 +1,16 @@
 import { useMemo } from "react";
+import { boundsAroundPlayer } from "../../../collectable-utils";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
+import { useGame } from "../../../hooks/use-game";
+import { useObstacleSpawner } from "../../../hooks/use-obstacle-spawner";
 import { useRespawningCollectables } from "../../../hooks/use-respawning-collectables";
 import { useTextures } from "../../../hooks/use-textures";
+import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
+import type { ObstacleType } from "../../../types";
 import HealingPotion from "../../collectables/healing-potion";
 import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
-import Cougher from "../../enemies/cougher";
-import Walker from "../../enemies/walker";
-import { boundsAroundPlayer } from "../../../collectable-utils";
-import { useGame } from "../../../hooks/use-game";
-import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
-import type { ObstacleType } from "../../../types";
-import { useObstacleSpawner } from "../../../hooks/use-obstacle-spawner";
+import LadyOfEase from "../../enemies/lady-of-ease";
 
 const OBSTACLE_TYPES: ObstacleType[] = ["roll", "cube", "ball", "pile"];
 
@@ -63,25 +62,22 @@ export default function LevelStroh() {
 
   const { enemies, removeEnemy } = useEnemySpawner({
     initialSpawnInterval: 0.5,
-    enemyTypes: [
-      { component: Cougher, weight: 2 },
-      { component: Walker, weight: 2 },
-    ],
+    enemyTypes: [{ component: LadyOfEase }],
     initialEnemies: [
       {
         id: 1,
         position: [5, 5],
-        type: { component: Cougher },
+        type: { component: LadyOfEase },
       },
       {
         id: 2,
         position: [-5, -5],
-        type: { component: Walker },
+        type: { component: LadyOfEase },
       },
       {
         id: 3,
         position: [-5, 5],
-        type: { component: Cougher },
+        type: { component: LadyOfEase },
       },
     ],
   });
