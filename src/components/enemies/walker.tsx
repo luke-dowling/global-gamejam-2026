@@ -53,7 +53,7 @@ export default function Walker({ position, onDestroy }: Props) {
       movingAnimation={movingAnimation}
       movementBehavior={movementBehavior}
       onDestroy={onDestroy}
-      isWalker={true}
+      isFriendly={true}
     />
   );
 }

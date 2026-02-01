@@ -21,7 +21,7 @@ interface EnemyProps {
   onDestroy?: () => void;
   onDying?: () => void;
   health?: number;
-  isWalker?: boolean;
+  isFriendly?: boolean;
 }
 
 export default function Enemy({
@@ -34,7 +34,7 @@ export default function Enemy({
   movementBehavior,
   onDestroy,
   onDying,
-  isWalker = false,
+  isFriendly = false,
 }: EnemyProps) {
   const { playerPosition, takePlayerDamage } = useGame();
   const enemyMeshRef = useRef<THREE.Mesh>(null!);
@@ -153,7 +153,7 @@ export default function Enemy({
       hasCollidedRef.current = true;
 
       // Only damage player if not a walker
-      if (!isWalker) {
+      if (!isFriendly) {
         takePlayerDamage();
       }
 

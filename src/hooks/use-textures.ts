@@ -12,6 +12,8 @@ import healingPotion from "../assets/powerup-health.png";
 import speedUp from "../assets/powerup-speedboost.png";
 import vaccine from "../assets/powerup-vaccine.png";
 import statusUiHealthHeart from "../assets/status-ui-health-heart.png";
+import elonTechBro from "../assets/elon_tech-bro-positive.png";
+import elonHater from "../assets/elon_hater-negative.png";
 
 // All game images - using actual imports to ensure bundler processes them
 export const GAME_IMAGES = {
@@ -26,6 +28,8 @@ export const GAME_IMAGES = {
   speedUp,
   healingPotion,
   playerElon,
+  elonTechBro,
+  elonHater,
 };
 
 export type GameTextures = {

@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useEnemySpawner } from "../../../hooks/use-enemy-spawner";
 import { useTextures } from "../../../hooks/use-textures";
 import SpeedUp from "../../collectables/speed-up";
-import Cougher from "../../enemies/cougher";
-import Walker from "../../enemies/walker";
+import Hater from "../../enemies/hater";
+import TechBro from "../../enemies/tech-bro";
 import Obstacle from "../../obstacle";
 
 export default function LevelElon() {
@@ -16,12 +16,12 @@ export default function LevelElon() {
 
   const { enemies, removeEnemy } = useEnemySpawner({
     spawnInterval: 1.5,
-    enemyTypes: [{ component: Cougher }, { component: Walker }],
+    enemyTypes: [{ component: TechBro }, { component: Hater }],
     initialEnemies: [
       {
         id: 1,
         position: [5, 5],
-        type: { component: Cougher },
+        type: { component: TechBro },
       },
     ],
   });
