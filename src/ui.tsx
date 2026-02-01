@@ -30,7 +30,7 @@ export default function UI() {
             />
           ))}
         </div>
-        <div className="border rounded-lg bg-white flex flex-col p-4 m-4">
+        <div className="border rounded-lg bg-white items-center justify-center flex flex-col p-4 m-4">
           <div>Score: {playerPoints}</div>
         </div>
       </div>
