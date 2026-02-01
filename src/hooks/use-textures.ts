@@ -27,6 +27,9 @@ import obstacleStrawRoll from "../assets/straw_obstacle_2.png";
 import obstacleStrawCube from "../assets/straw_obstacle_3.png";
 import obstacleStrawPile from "../assets/straw_obstacle_4.png";
 
+import maga from "../assets/powerup-maga.png";
+import coin from "../assets/powerup-coin.png";
+// import vaccine from "../assets/powerup-vaccine.png";
 
 // All game images - using actual imports to ensure bundler processes them
 export const GAME_IMAGES = {
@@ -54,8 +57,9 @@ export const GAME_IMAGES = {
   obstacleStrawBall,
   obstacleStrawCube,
   obstacleStrawPile,
-  obstacleStrawRoll
-
+  obstacleStrawRoll,
+  maga,
+  coin,
 };
 
 export type GameTextures = {
