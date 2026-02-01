@@ -1,8 +1,89 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("./assets/fonts/press-start-2p/PressStart2P-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-pressStart: "Press Start 2P", monospace;
+}
+
 @layer utilities {
   .pixelated {
     image-rendering: pixelated;
+  }
+
+  .sprite-frame {
+    background-size: 500% 100%;
+    image-rendering: pixelated;
+  }
+
+  .sprite-animate {
+    animation: spriteFrames 15s steps(1) infinite;
+  }
+
+  .fade-pulse {
+    animation: fadePulse 2s ease-in-out infinite;
+  }
+}
+
+@layer components {
+  .main-title {
+    font-size: clamp(6rem, 15vw, 8rem) !important;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: #f5e6c8;
+    text-shadow:
+      4px 0 #c2412d,
+      -4px 0 #c2412d,
+      0 4px #c2412d,
+      0 -4px #c2412d,
+      4px 4px #9a2e1f;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+    image-rendering: pixelated;
+  }
+
+  .main-title .block {
+    display: block;
+    margin-top: 0.5em;
+    padding-left: 2em;
+  }
+}
+
+@keyframes spriteFrames {
+  0% {
+    background-position: 0% 0%;
+  }
+  20% {
+    background-position: 25% 0%;
+  }
+  40% {
+    background-position: 50% 0%;
+  }
+  60% {
+    background-position: 75% 0%;
+  }
+  80% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes fadePulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
