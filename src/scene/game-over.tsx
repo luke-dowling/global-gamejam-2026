@@ -33,6 +33,13 @@ export default function GameOver() {
             </h2>
             <div className="h-2 w-2 rounded-[50%] bg-white opacity-85"></div>
           </section>
+          <section className="flex justify-center gap-3 py-3 items-center">
+            <input
+              className="border rounded-lg text-center text-2xl p-2"
+              placeholder="enter name for scoreboard"
+              type="text"
+            />
+          </section>
         </header>
 
         <div className="flex gap-8">
