@@ -1,16 +1,47 @@
-import { Skull } from "lucide-react";
+import { useFrame } from "@react-three/fiber";
+import { VenetianMask } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useMediaQuery } from "react-responsive";
 import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
+import { useGame } from "../hooks/use-game";
 
-export default function GameOver() {
+export default function Highscore() {
   const { switchScene } = useSceneManager();
+  const { resetPlayer } = useGame();
+  const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
+  const pressSpaceRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    resetPlayer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function goToLevelSelect() {
+    switchScene("level-select");
+  }
 
   useControls({
-    keyboard: {
-      " ": () => switchScene("game"),
-      Enter: () => switchScene("game"),
-    },
+    ...(isTouch
+      ? {
+          touch: {
+            onTouchStart: goToLevelSelect,
+          },
+        }
+      : {
+          keyboard: {
+            " ": goToLevelSelect,
+            Enter: goToLevelSelect,
+          },
+        }),
+  });
+
+  useFrame(({ clock }) => {
+    if (pressSpaceRef.current) {
+      const fade = Math.sin(clock.getElapsedTime() * 1.5) * 0.35 + 0.65;
+      pressSpaceRef.current.style.opacity = fade.toString();
+    }
   });
 
   return (
@@ -19,34 +50,47 @@ export default function GameOver() {
         <header>
           <section className="flex justify-center gap-1 py-3 items-center">
             <div className="w-20 border-b-2 border-white"></div>
-            <Skull size={48} />
+            <VenetianMask size={48} />
             <div className="w-20 border-b-2 border-white"></div>
           </section>
-          <h1 className="text-center uppercase text-8xl tracking-wide font-bold text-white drop-shadow-lg py-5">
-            Game Over
+          <h1 className="text-center uppercase text-8xl  tracking-wide font-bold text-white drop-shadow-lg py-5">
+            Highscore
           </h1>
           <section className="flex justify-center gap-3 py-3 items-center">
             <div className="h-2 w-2 rounded-[50%] bg-white"></div>
-
-            <h2 className="text-3xl font-light drop-shadow-lg uppercase tracking-wide">
-              You died
-            </h2>
             <div className="h-2 w-2 rounded-[50%] bg-white opacity-85"></div>
+          </section>
+          <section className="flex justify-center gap-3 py-3 items-center">
+            <div className="border rounded-lg text-2xl">
+              <table>
+                <thead>
+                  <th className="w-12 px-3 py-2">#</th>
+                  <th className="px-3 py-2">Player</th>
+                  <th className="px-3 py-2">Score</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="w-12 px-3 py-2 text-right">1</td>
+                    <td className="px-3 py-2">foo bar</td>
+                    <td className="px-3 py-2">42</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </section>
         </header>
 
         <div className="flex gap-8">
           <button
-            onClick={() => switchScene("highscore")}
-            onTouchEnd={() => switchScene("highscore")}
+            onClick={() => switchScene("game")}
+            onTouchEnd={() => switchScene("game")}
             className="group relative border-2 border-white/30 bg-white/5 hover:bg-white/20 hover:border-white/60 transition-all duration-300 px-8 py-4 rounded-lg backdrop-blur-sm cursor-pointer flex flex-col justify-center items-center"
           >
             <div className="text-2xl font-light uppercase tracking-wider text-center">
-              Highscore
+              Try Again
             </div>
             <div className="absolute inset-0 rounded-lg bg-linear-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-300"></div>
           </button>
-
           <button
             onClick={() => switchScene("level-select")}
             onTouchEnd={() => switchScene("level-select")}
@@ -58,10 +102,6 @@ export default function GameOver() {
             <div className="absolute inset-0 rounded-lg bg-linear-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-300"></div>
           </button>
         </div>
-
-        {/* <p className="text-2xl font-extralight text-white/60">
-          Press Space to return to start
-        </p> */}
       </div>
     </UIElement>
   );
