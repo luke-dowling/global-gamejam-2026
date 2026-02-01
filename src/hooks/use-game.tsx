@@ -62,7 +62,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [playerHealth, setPlayerHealth] = useState<number>(5);
   const [isPlayerImmuneToDamage, setIsPlayerImmuneToDamage] = useState(false);
   const [playerPoints, setPlayerPoints] = useState(0);
-  console.log("playerPoints", playerPoints);
 
   const addPlayerPoints = () => {
     setPlayerPoints((prev) => Math.max(0, prev + 100));

@@ -5,11 +5,13 @@ import { useControls } from "../hooks/use-controls";
 import { useHighscores } from "../highscore-store";
 import type { SceneName } from "../components/scene-manager";
 import { useState } from "react";
+import { useGame } from "../hooks/use-game";
 
 export default function GameOver() {
   const { switchScene } = useSceneManager();
   const [hasError, setHasError] = useState(false);
   const [name, setName] = useState("");
+  const { playerPoints } = useGame();
   useControls({
     keyboard: {
       " ": () => handleContinue("highscore"),
@@ -25,7 +27,7 @@ export default function GameOver() {
     setHasError(false);
     addHighscore({
       name: name.trim(),
-      points: Math.floor(Math.random() * 20),
+      points: playerPoints,
     });
 
     switchScene(scene);
