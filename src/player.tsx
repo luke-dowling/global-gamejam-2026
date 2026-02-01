@@ -1,4 +1,3 @@
-import { OrthographicCamera } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
@@ -11,7 +10,6 @@ import {
 import { useControls } from "./hooks/use-controls";
 import { useGame } from "./hooks/use-game";
 import { useTextures } from "./hooks/use-textures";
-import UI from "./ui";
 import { isColliding } from "./utils/collision";
 
 const spriteSheet: SpriteSheetData = {
@@ -40,8 +38,8 @@ export default function Player() {
     playerHealth,
     isPlayerImmuneToDamage,
   } = useGame();
-  const { size } = useThree();
   const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
+  const { size } = useThree();
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const velocityRef = useRef(velocity);
   const playerMeshRef = useRef<THREE.Mesh>(null!);
@@ -303,13 +301,6 @@ export default function Player() {
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial map={characterTexture} transparent />
       </mesh>
-      <OrthographicCamera
-        makeDefault
-        position={[playerPosition.x, playerPosition.y, playerPosition.z + 1]}
-        zoom={100}
-      >
-        <UI />
-      </OrthographicCamera>
     </>
   );
 }
