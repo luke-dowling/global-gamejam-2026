@@ -12,17 +12,23 @@ type Props = {
 };
 
 const idleAnimation: Animation = [{ x: 0, y: 0, duration: 0.2 }];
+const movingAnimation: Animation = [
+  { x: 1, y: 0, duration: 0.1 },
+  { x: 2, y: 0, duration: 0.15 },
+  { x: 3, y: 0, duration: 0.1 },
+  { x: 2, y: 0, duration: 0.15 },
+];
 
 export default function Walker({ position, onDestroy }: Props) {
   const { playerPosition } = useGame();
   const textures = useTextures();
 
   const spriteSheet: SpriteSheetData = {
-    texture: textures.enemy,
+    texture: textures.nonCougher,
     tileWidth: 32,
     tileHeight: 32,
     rows: 1,
-    cols: 1,
+    cols: 5,
   };
 
   // Calculate direction towards player on spawn and lock it
@@ -44,8 +50,10 @@ export default function Walker({ position, onDestroy }: Props) {
       speed={1.2}
       spriteSheet={spriteSheet}
       idleAnimation={idleAnimation}
+      movingAnimation={movingAnimation}
       movementBehavior={movementBehavior}
       onDestroy={onDestroy}
+      isWalker={true}
     />
   );
 }

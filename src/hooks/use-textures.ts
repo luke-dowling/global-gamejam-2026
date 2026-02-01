@@ -2,6 +2,7 @@ import { useTexture } from "@react-three/drei";
 import { createContext, useContext, useEffect, useState } from "react";
 import * as THREE from "three";
 import cougherMaleImage from "../assets/cougher-m.png";
+import nonCougherImage from "../assets/non-cougher-m.png";
 import enemyImage from "../assets/enemy.png";
 import floorGreyImage from "../assets/floor-grey.png";
 import floorImage from "../assets/floor.png";
@@ -16,6 +17,7 @@ export const GAME_IMAGES = {
   playerSprites: playerSpritesImage,
   enemy: enemyImage,
   cougherMale: cougherMaleImage,
+  nonCougher: nonCougherImage,
   floor: floorImage,
   floorGrey: floorGreyImage,
   statusUiHealthHeart: statusUiHealthHeartImage,
@@ -28,6 +30,7 @@ export type GameTextures = {
   playerSprites: THREE.Texture;
   enemy: THREE.Texture;
   cougherMale: THREE.Texture;
+  nonCougher: THREE.Texture;
   floor: THREE.Texture;
   floorGrey: THREE.Texture;
   statusUiHealthHeart: THREE.Texture;
@@ -69,6 +72,12 @@ export function usePreloadTextures() {
     textures.cougherMale.minFilter = THREE.NearestFilter;
     textures.cougherMale.wrapS = THREE.RepeatWrapping;
     textures.cougherMale.wrapT = THREE.RepeatWrapping;
+
+    // Configure non-cougher texture
+    textures.nonCougher.magFilter = THREE.NearestFilter;
+    textures.nonCougher.minFilter = THREE.NearestFilter;
+    textures.nonCougher.wrapS = THREE.RepeatWrapping;
+    textures.nonCougher.wrapT = THREE.RepeatWrapping;
 
     // Configure floor textures
     textures.floor.magFilter = THREE.NearestFilter;
