@@ -94,11 +94,10 @@ export function useSound(soundKey: keyof GameAudio) {
 
   const play = useCallback(async () => {
     if (audioElement) {
-      // Clone the audio element so multiple instances can play simultaneously
-      const clone = audioElement.cloneNode() as HTMLAudioElement;
-      clone.currentTime = 0;
+      // Use the original element directly (don't clone) so loop works correctly
+      audioElement.currentTime = 0;
       try {
-        await clone.play();
+        await audioElement.play();
       } catch (error) {
         console.error("Failed to play sound:", error);
       }
@@ -136,11 +135,21 @@ export function useSound(soundKey: keyof GameAudio) {
     [audioElement]
   );
 
+  const setLoop = useCallback(
+    (loop: boolean) => {
+      if (audioElement) {
+        audioElement.loop = loop;
+      }
+    },
+    [audioElement]
+  );
+
   return {
     play,
     pause,
     stop,
     setVolume,
     setPlaybackRate,
+    setLoop,
   };
 }

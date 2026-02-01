@@ -1,7 +1,8 @@
 import { Html } from "@react-three/drei";
+import { useEffect } from "react";
 import LevelManager from "../components/level-manager";
 import { LevelManagerProvider } from "../components/level-manager/use-level-manager";
-import { AudioProvider, usePreloadAudio } from "../hooks/use-audio";
+import { AudioProvider, usePreloadAudio, useSound } from "../hooks/use-audio";
 import { TexturesProvider, usePreloadTextures } from "../hooks/use-textures";
 import Player from "../player";
 import World from "../world";
@@ -27,12 +28,34 @@ export default function Game() {
   return (
     <TexturesProvider value={textures}>
       <AudioProvider value={audio}>
-        <World />
-        <LevelManagerProvider>
-          <LevelManager />
-          <Player />
-        </LevelManagerProvider>
+        <GameContent />
       </AudioProvider>
     </TexturesProvider>
+  );
+}
+
+function GameContent() {
+  const mainThemeSound = useSound("mainTheme");
+
+  useEffect(() => {
+    mainThemeSound.setVolume(0.6);
+    mainThemeSound.setLoop(true);
+    mainThemeSound.play().catch((error) => {
+      console.error("Failed to play background music:", error);
+    });
+
+    return () => {
+      mainThemeSound.stop();
+    };
+  }, [mainThemeSound]);
+
+  return (
+    <>
+      <World />
+      <LevelManagerProvider>
+        <LevelManager />
+        <Player />
+      </LevelManagerProvider>
+    </>
   );
 }
