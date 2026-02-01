@@ -6,6 +6,6 @@ export type ObstacleType = "fence" | "well" | "puddle" | "box" | "rocket" | "sat
 export type ObstacleConfig = {
   id: string;
   type: ObstacleType;
-  position: [number, number, number];
+  position: [number, number];
   size?: [number, number];
 };

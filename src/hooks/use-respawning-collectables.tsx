@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 
 interface ObstacleConfig {
   position: [number, number];
-  size: [number, number];
+  size?: [number, number];
 }
 
 interface Bounds {
@@ -62,7 +62,7 @@ export function useRespawningCollectables({
       let hasCollision = false;
       for (const obstacle of obstacles) {
         const [obsX, obsY] = obstacle.position;
-        const [sizeX, sizeY] = obstacle.size;
+        const [sizeX, sizeY] = obstacle.size || [2, 2]; // Default size if not specified
 
         const halfSizeX = sizeX / 2;
         const halfSizeY = sizeY / 2;

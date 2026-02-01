@@ -7,25 +7,13 @@ import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
 import Cougher from "../../enemies/cougher";
 import Walker from "../../enemies/walker";
-import Obstacle from "../../obstacle";
 import { boundsAroundPlayer } from "../../../collectable-utils";
 import { useGame } from "../../../hooks/use-game";
+import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
+import type { ObstacleType } from "../../../types";
+import { useObstacleSpawner } from "../../../hooks/use-obstacle-spawner";
 
-const obstacleConfigs = [
-  { position: [-8, 8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [8, 8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [-8, -8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [8, -8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [0, 0] as [number, number], size: [3, 3] as [number, number] },
-  {
-    position: [-12, 0] as [number, number],
-    size: [1.5, 1.5] as [number, number],
-  },
-  {
-    position: [12, 0] as [number, number],
-    size: [1.5, 1.5] as [number, number],
-  },
-];
+const OBSTACLE_TYPES: ObstacleType[] = ["fence", "well", "puddle", "box"];
 
 export default function LevelStroh() {
   const { playerPosition } = useGame();
@@ -42,6 +30,12 @@ export default function LevelStroh() {
     return boundsAroundPlayer(centerX, centerY, 10);
   }, [cx, cy]);
 
+  const { obstacles } = useObstacleSpawner({
+    obstacleTypes: OBSTACLE_TYPES,
+    chunkSize: 32,
+    obstaclesPerChunk: 5,
+  });
+
   const {
     healthPotions,
     speedUps,
@@ -50,7 +44,7 @@ export default function LevelStroh() {
     onSpeedUpCollect,
     onVaccinationImmunityCollect,
   } = useRespawningCollectables({
-    obstacles: obstacleConfigs,
+    obstacles: obstacles,
     bounds: bounds,
     collectableConfig: {
       healthPotions: 0,
@@ -100,9 +94,16 @@ export default function LevelStroh() {
         <meshBasicMaterial map={floorTexture} />
       </mesh>
 
-      {obstacleConfigs.map((config, index) => (
-        <Obstacle key={index} position={config.position} size={config.size} />
-      ))}
+      {obstacles.map((config) => {
+        const Comp = OBSTACLE_REGISTRY[config.type];
+        return (
+          <Comp
+            key={config.id}
+            position={[config.position[0], config.position[1]]}
+            size={config.size}
+          />
+        );
+      })}
 
       {speedUps.map((speedUp) => (
         <SpeedUp

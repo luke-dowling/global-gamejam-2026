@@ -7,16 +7,13 @@ import SpeedUp from "../../collectables/speed-up";
 import VaccinationImmunity from "../../collectables/vaccination-immunity";
 import Hater from "../../enemies/hater";
 import TechBro from "../../enemies/tech-bro";
-import Obstacle from "../../obstacle";
 import { boundsAroundPlayer } from "../../../collectable-utils";
 import { useGame } from "../../../hooks/use-game";
+import { OBSTACLE_REGISTRY } from "../../../obstacle-registry";
+import type { ObstacleType } from "../../../types";
+import { useObstacleSpawner } from "../../../hooks/use-obstacle-spawner";
 
-const obstacleConfigs = [
-  { position: [-8, 8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [8, 8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [-8, -8] as [number, number], size: [2, 2] as [number, number] },
-  { position: [8, -8] as [number, number], size: [2, 2] as [number, number] },
-];
+const OBSTACLE_TYPES: ObstacleType[] = ["fence", "well", "puddle", "box"];
 
 export default function LevelElon() {
   const { playerPosition } = useGame();
@@ -33,6 +30,12 @@ export default function LevelElon() {
     return boundsAroundPlayer(centerX, centerY, 10);
   }, [cx, cy]);
 
+  const { obstacles } = useObstacleSpawner({
+    obstacleTypes: OBSTACLE_TYPES,
+    chunkSize: 32,
+    obstaclesPerChunk: 5,
+  });
+
   const {
     healthPotions,
     speedUps,
@@ -41,7 +44,7 @@ export default function LevelElon() {
     onSpeedUpCollect,
     onVaccinationImmunityCollect,
   } = useRespawningCollectables({
-    obstacles: obstacleConfigs,
+    obstacles: obstacles,
     bounds: bounds,
     collectableConfig: {
       healthPotions: 1,
@@ -83,9 +86,16 @@ export default function LevelElon() {
         <meshBasicMaterial map={floorTexture} />
       </mesh>
 
-      {obstacleConfigs.map((config, index) => (
-        <Obstacle key={index} position={config.position} size={config.size} />
-      ))}
+      {obstacles.map((config) => {
+        const Comp = OBSTACLE_REGISTRY[config.type];
+        return (
+          <Comp
+            key={config.id}
+            position={[config.position[0], config.position[1]]}
+            size={config.size}
+          />
+        );
+      })}
 
       {speedUps.map((speedUp) => (
         <SpeedUp
