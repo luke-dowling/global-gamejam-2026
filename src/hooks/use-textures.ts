@@ -18,6 +18,10 @@ import obstacleFence from "../assets/obstacle_1.png";
 import obstaclePuddle from "../assets/obstacle_2.png";
 import obstacleBox from "../assets/obstacle_3.png";
 import obstacleWell from "../assets/obstacle_4.png";
+import obstacleTesla from "../assets/elon_obstacle_1.png";
+import obstacleRocket from "../assets/elon_obstacle_2.png";
+import obstacleCorp from "../assets/elon_obstacle_3.png";
+import obstacleSatelite from "../assets/elon_obstacle_4.png";
 
 // All game images - using actual imports to ensure bundler processes them
 export const GAME_IMAGES = {
@@ -38,6 +42,11 @@ export const GAME_IMAGES = {
   obstaclePuddle,
   obstacleBox,
   obstacleWell,
+  obstacleRocket,
+  obstacleCorp,
+  obstacleSatelite,
+  obstacleTesla,
+
 };
 
 export type GameTextures = {

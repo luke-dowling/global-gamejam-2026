@@ -25,7 +25,7 @@ const obstacleConfigs1 = [
   },
   { position: [5, -2] as [number, number], size: [2, 2] as [number, number] },
 ];
-const TYPES: ObstacleType[] = ["fence", "well", "puddle", "box"];
+const TYPES: ObstacleType[] = ["fence", "rocket", "puddle", "box"];
 
 function randInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
