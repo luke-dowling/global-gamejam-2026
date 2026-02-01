@@ -36,7 +36,8 @@ export default function Enemy({
   onDying,
   isFriendly = false,
 }: EnemyProps) {
-  const { playerPosition, takePlayerDamage } = useGame();
+  const { playerPosition, takePlayerDamage, gameTime, incrementGameTime } =
+    useGame();
   const enemyMeshRef = useRef<THREE.Mesh>(null!);
   const playerMeshRef = useRef<THREE.Mesh | null>(null);
   const hasCollidedRef = useRef<boolean>(false);
@@ -72,6 +73,13 @@ export default function Enemy({
   useFrame(({ scene }, delta) => {
     if (!enemyMeshRef.current) return;
 
+    // Increment game time
+    incrementGameTime(delta);
+
+    // Calculate speed multiplier based on game time
+    // Speed increases by 10% every 30 seconds, capping at 3x
+    const speedMultiplier = 1 + (gameTime / 30) * 0.1;
+
     // Handle dying state
     if (isDying) {
       if (dyingAnimation) {
@@ -103,7 +111,7 @@ export default function Enemy({
       currentPosition: enemyMeshRef.current.position,
       playerPosition,
       delta,
-      speed,
+      speed: speed * speedMultiplier,
     });
 
     // Track horizontal movement direction for mirroring

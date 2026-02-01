@@ -24,6 +24,8 @@ interface GameContextType {
   setIsPlayerImmuneToDamage: (bool: boolean) => void;
   addPlayerPoints: () => void;
   playerPoints: number;
+  gameTime: number;
+  incrementGameTime: (delta: number) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -62,6 +64,11 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [playerHealth, setPlayerHealth] = useState<number>(5);
   const [isPlayerImmuneToDamage, setIsPlayerImmuneToDamage] = useState(false);
   const [playerPoints, setPlayerPoints] = useState(0);
+  const [gameTime, setGameTime] = useState(0);
+
+  const incrementGameTime = (delta: number) => {
+    setGameTime((prev) => prev + delta);
+  };
 
   const addPlayerPoints = () => {
     setPlayerPoints((prev) => Math.max(0, prev + 100));
@@ -96,6 +103,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setPlayerHealth(initialPlayerSetUp.playerHealth);
     setGameEventLog([]);
     setPlayerPoints(0);
+    setGameTime(0);
   };
 
   return (
@@ -116,6 +124,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         setIsPlayerImmuneToDamage,
         addPlayerPoints,
         playerPoints,
+        gameTime,
+        incrementGameTime,
       }}
     >
       {children}
