@@ -3,13 +3,21 @@ import { useEffect } from "react";
 import LevelManager from "../components/level-manager";
 import { LevelManagerProvider } from "../components/level-manager/use-level-manager";
 import { AudioProvider, usePreloadAudio, useSound } from "../hooks/use-audio";
+import { useGame } from "../hooks/use-game";
 import { TexturesProvider, usePreloadTextures } from "../hooks/use-textures";
 import Player from "../player";
 import World from "../world";
 
 export default function Game() {
+  const { resetPlayer } = useGame();
   const { isLoaded: texturesLoaded, textures } = usePreloadTextures();
   const { isLoaded: audioLoaded, audio } = usePreloadAudio();
+
+  // Reset player health and state when entering the game scene
+  useEffect(() => {
+    resetPlayer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isLoaded = texturesLoaded && audioLoaded;
 

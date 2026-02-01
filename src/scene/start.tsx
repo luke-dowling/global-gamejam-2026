@@ -18,22 +18,21 @@ export default function Start() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function startGame() {
-    switchScene("game");
+  function goToLevelSelect() {
+    switchScene("level-select");
   }
 
   useControls({
     ...(isTouch
       ? {
           touch: {
-            onTouchStart: startGame,
+            onTouchStart: goToLevelSelect,
           },
         }
       : {
           keyboard: {
-            // Todo: change game to menu when the game is ready
-            " ": startGame,
-            Enter: startGame,
+            " ": goToLevelSelect,
+            Enter: goToLevelSelect,
           },
         }),
   });

@@ -1,12 +1,12 @@
 import Game from "../../scene/game";
-import Menu from "../../scene/menu";
+import LevelSelect from "../../scene/level-select";
 import Start from "../../scene/start";
 import GameOver from "../../scene/game-over";
 import { useSceneManager } from "./use-scene-manager";
 
 const scenes = {
   start: Start,
-  menu: Menu,
+  "level-select": LevelSelect,
   game: Game,
   gameOver: GameOver,
 };
