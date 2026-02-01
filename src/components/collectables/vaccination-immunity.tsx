@@ -37,7 +37,7 @@ export default function VaccinationImmunity({
     <Collectable
       position={position}
       texture={vaccineTexture}
-      color="#1b3ae9"
+      pickupSound="vaccine"
       onCollect={onCollect}
     />
   );

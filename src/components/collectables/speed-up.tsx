@@ -39,7 +39,7 @@ export default function SpeedUp({
     <Collectable
       position={position}
       texture={speedUpTexture}
-      color="#00FF00"
+      pickupSound="speedBoost"
       onCollect={onCollect}
     />
   );

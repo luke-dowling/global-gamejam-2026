@@ -32,7 +32,7 @@ export default function HealingPotion({
     <Collectable
       position={position}
       texture={healingPotionTexture}
-      color="#FF0000"
+      pickupSound="apple"
       onCollect={onCollect}
     />
   );

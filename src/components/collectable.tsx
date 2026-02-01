@@ -1,19 +1,22 @@
 import type { Texture } from "three";
 import { useCollectable } from "../hooks/use-collectable";
+import type { GameAudio } from "../hooks/use-audio";
 
 export interface CollectableProps {
   position: [number, number];
-  color: string;
   onCollect: () => void;
   texture: Texture;
+  pickupSound: keyof GameAudio;
 }
 
 export default function Collectable({
   position,
   onCollect,
   texture,
+  pickupSound,
 }: CollectableProps) {
   const { meshRef, isCollected } = useCollectable({
+    pickupSound,
     onCollect: () => {
       console.log("Collectable collected!");
       onCollect?.();

@@ -3,18 +3,19 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGame } from "./use-game";
 import { isColliding } from "../utils/collision";
-import { useSound } from "./use-audio";
+import { useSound, type GameAudio } from "./use-audio";
 
-interface UseCollectableOptions {
+type Props = {
+  pickupSound: keyof GameAudio;
   onCollect?: () => void;
-}
+};
 
-export function useCollectable(options?: UseCollectableOptions) {
+export function useCollectable({ onCollect, pickupSound }: Props) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [isCollected, setIsCollected] = useState(false);
   const { playerPosition } = useGame();
   const hasCollectedRef = useRef(false);
-  const audio = useSound("coinSound");
+  const audio = useSound(pickupSound);
 
   useFrame(() => {
     if (meshRef.current && !hasCollectedRef.current) {
@@ -35,8 +36,8 @@ export function useCollectable(options?: UseCollectableOptions) {
         // Play collection sound
         audio.play();
 
-        if (options?.onCollect) {
-          options.onCollect();
+        if (onCollect) {
+          onCollect();
         }
       }
     }
