@@ -11,6 +11,7 @@ import { useControls } from "./hooks/use-controls";
 import { useGame } from "./hooks/use-game";
 import { useTextures } from "./hooks/use-textures";
 import { isColliding } from "./utils/collision";
+import { useLevelManager } from "./components/level-manager/use-level-manager";
 
 const spriteSheet: SpriteSheetData = {
   url: "", // URL not needed anymore
@@ -39,6 +40,7 @@ export default function Player() {
     isPlayerImmuneToDamage,
   } = useGame();
   const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
+  const { activeLevelName } = useLevelManager();
   const { size } = useThree();
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const velocityRef = useRef(velocity);
@@ -58,12 +60,25 @@ export default function Player() {
 
   const textures = useTextures();
   const characterTexture = useMemo(() => {
-    const texture = textures.playerSprites.clone();
+    let textureBase = textures.playerSprites;
+    switch (activeLevelName) {
+      case "covid":
+        // textureBase = textures.playerCovid
+        break;
+      case "elon":
+        // textureBase = textures.playerElon;
+        break;
+      case "stroh":
+        // textureBase = textures.playerStroh;
+        break;
+      default:
+        textureBase = textures.playerSprites;
+    }
+    const texture = textureBase.clone();
     // Set initial UV repeat based on sprite sheet
     texture.repeat.set(1 / spriteSheet.cols, 1 / spriteSheet.rows);
     return texture;
-  }, [textures]);
-
+  }, [textures, activeLevelName]);
   const handleTouchMove = (e: TouchEvent) => {
     if (!isTouchActiveRef.current) return;
 
