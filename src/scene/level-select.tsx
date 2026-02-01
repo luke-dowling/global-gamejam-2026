@@ -4,6 +4,7 @@ import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import { Lock } from "lucide-react";
 import { useLevelManager } from "../components/level-manager/use-level-manager";
 import type { LevelName } from "../components/level-manager";
+import { useHighscores } from "../highscore-store";
 
 type LevelPreview = {
   levelName: string;
@@ -13,12 +14,9 @@ type LevelPreview = {
 
 const levels: LevelPreview[] = [
   { levelName: "Covid", levelId: "covid", requiredScore: 0 },
-  { levelName: "Elon", levelId: "elon", requiredScore: 100 },
-  { levelName: "Stroh", levelId: "stroh", requiredScore: 250 },
+  { levelName: "Elon", levelId: "elon", requiredScore: 1000 },
+  { levelName: "Stroh", levelId: "stroh", requiredScore: 2500 },
 ];
-
-// TODO: This would be read from useAchievements or similar
-const currentHighScore = 120;
 
 export default function Menu() {
   const { switchLevel } = useLevelManager();
@@ -30,6 +28,12 @@ export default function Menu() {
       Enter: () => switchScene("game"),
     },
   });
+
+  const { highscores } = useHighscores();
+  const highestScore = highscores.reduce(
+    (max, entry) => (entry.points > max ? entry.points : max),
+    0
+  );
 
   return (
     <UIElement>
@@ -50,7 +54,7 @@ export default function Menu() {
 
         <div className="grid grid-cols-3 gap-16 px-10 w-full max-w-7xl items-end">
           {levels.map((level, index) => {
-            const isLocked = currentHighScore < level.requiredScore;
+            const isLocked = highestScore < level.requiredScore;
             return (
               <div key={level.levelName} className="flex flex-col items-center">
                 {isLocked && (
