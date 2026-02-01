@@ -15,7 +15,7 @@ export function LevelManagerProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [activeLevelName, setActiveLevelName] = useState<LevelName>("level1");
+  const [activeLevelName, setActiveLevelName] = useState<LevelName>("covid");
 
   return (
     <LevelManagerContext.Provider

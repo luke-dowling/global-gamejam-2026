@@ -1,10 +1,12 @@
-import Level1 from "./levels/level1";
-import Level2 from "./levels/level2";
+import LevelCovid from "./levels/covid";
+import LevelElon from "./levels/elon";
+import LevelStroh from "./levels/stroh";
 import { useLevelManager } from "./use-level-manager";
 
 const levels = {
-  level1: Level1,
-  level2: Level2,
+  covid: LevelCovid,
+  elon: LevelElon,
+  stroh: LevelStroh,
 };
 
 export type LevelName = keyof typeof levels;

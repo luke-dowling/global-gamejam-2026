@@ -6,7 +6,7 @@ import Cougher from "../../enemies/cougher";
 import Walker from "../../enemies/walker";
 import Obstacle from "../../obstacle";
 
-export default function Level2() {
+export default function LevelStroh() {
   const textures = useTextures();
   const floorTexture = useMemo(() => {
     const texture = textures.floor.clone();

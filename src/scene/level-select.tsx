@@ -2,22 +2,26 @@ import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
 import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import { Lock } from "lucide-react";
+import { useLevelManager } from "../components/level-manager/use-level-manager";
+import type { LevelName } from "../components/level-manager";
 
 type LevelPreview = {
   levelName: string;
+  levelId: LevelName;
   requiredScore: number;
 };
 
 const levels: LevelPreview[] = [
-  { levelName: "Level One", requiredScore: 0 },
-  { levelName: "Level Two", requiredScore: 100 },
-  { levelName: "Level Three", requiredScore: 250 },
+  { levelName: "Covid", levelId: "covid", requiredScore: 0 },
+  { levelName: "Elon", levelId: "elon", requiredScore: 100 },
+  { levelName: "Stroh", levelId: "stroh", requiredScore: 250 },
 ];
 
 // TODO: This would be read from useAchievements or similar
-const currentHighScore = 80;
+const currentHighScore = 120;
 
 export default function Menu() {
+  const { switchLevel } = useLevelManager();
   const { switchScene } = useSceneManager();
 
   useControls({
@@ -57,6 +61,7 @@ export default function Menu() {
                 <button
                   onClick={() => {
                     if (!isLocked) {
+                      switchLevel(level.levelId);
                       switchScene("game");
                     }
                   }}

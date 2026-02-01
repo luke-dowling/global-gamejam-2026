@@ -25,7 +25,7 @@ const obstacleConfigs = [
   { position: [5, -2] as [number, number], size: [2, 2] as [number, number] },
 ];
 
-export default function Level1() {
+export default function LevelCovid() {
   const { playerPosition } = useGame();
 
   const CHUNK_SIZE = 32;

@@ -2,7 +2,6 @@ import { Html } from "@react-three/drei";
 import { useEffect } from "react";
 import Camera from "../camera";
 import LevelManager from "../components/level-manager";
-import { LevelManagerProvider } from "../components/level-manager/use-level-manager";
 import { AudioProvider, usePreloadAudio, useSound } from "../hooks/use-audio";
 import { useGame } from "../hooks/use-game";
 import { TexturesProvider, usePreloadTextures } from "../hooks/use-textures";
@@ -61,11 +60,9 @@ function GameContent() {
   return (
     <>
       <World />
-      <LevelManagerProvider>
-        <LevelManager />
-        <Player />
-        <Camera />
-      </LevelManagerProvider>
+      <LevelManager />
+      <Player />
+      <Camera />
     </>
   );
 }

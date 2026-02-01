@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import SceneManager from "./components/scene-manager";
 import { SceneManagerProvider } from "./components/scene-manager/use-scene-manager";
 import { GameProvider } from "./hooks/use-game";
+import { LevelManagerProvider } from "./components/level-manager/use-level-manager";
 
 export default function App() {
   const hasInteractedRef = useRef(false);
@@ -36,7 +37,9 @@ export default function App() {
       <Canvas>
         <SceneManagerProvider>
           <GameProvider>
-            <SceneManager />
+            <LevelManagerProvider>
+              <SceneManager />
+            </LevelManagerProvider>
           </GameProvider>
         </SceneManagerProvider>
       </Canvas>

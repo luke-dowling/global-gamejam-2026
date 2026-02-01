@@ -6,7 +6,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import coinSound from "../assets/audio/effects/retro-coin.mp3";
 import mainTheme from "../assets/audio/main-theme.mp3";
 import breathe1 from "../assets/audio/effects/breathe1.wav";
 import breathe2 from "../assets/audio/effects/breathe2.wav";
@@ -17,7 +16,6 @@ import apple from "../assets/audio/effects/apple.wav";
 
 // All game audio files - using actual imports to ensure bundler processes them
 const GAME_AUDIO = {
-  coinSound,
   mainTheme,
   breathe1,
   breathe2,
