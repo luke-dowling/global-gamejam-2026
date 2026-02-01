@@ -34,6 +34,7 @@ export default function Cougher({ position, onDestroy }: Props) {
   );
 
   const audio = useSound(breatheSound);
+  audio.setVolume(0.3);
 
   const spriteSheet: SpriteSheetData = {
     texture: textures.cougherMale,

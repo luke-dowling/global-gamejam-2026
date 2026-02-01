@@ -5,6 +5,9 @@ import { Lock } from "lucide-react";
 import { useLevelManager } from "../components/level-manager/use-level-manager";
 import type { LevelName } from "../components/level-manager";
 import { useHighscores } from "../highscore-store";
+import { AudioProvider, usePreloadAudio, useSound } from "../hooks/use-audio";
+import { Html } from "@react-three/drei";
+import { useEffect } from "react";
 
 type LevelPreview = {
   levelName: string;
@@ -19,8 +22,39 @@ const levels: LevelPreview[] = [
 ];
 
 export default function Menu() {
+  const { isLoaded: audioLoaded, audio } = usePreloadAudio();
+
+  if (!audioLoaded) {
+    return (
+      <Html center>
+        <div style={{ color: "white", fontSize: "24px" }}>Loading...</div>
+      </Html>
+    );
+  }
+
+  return (
+    <AudioProvider value={audio}>
+      <MenuContent />
+    </AudioProvider>
+  );
+}
+
+function MenuContent() {
   const { switchLevel } = useLevelManager();
   const { switchScene } = useSceneManager();
+  const menuThemeSound = useSound("menuTheme");
+
+  useEffect(() => {
+    menuThemeSound.setVolume(1);
+    menuThemeSound.setLoop(true);
+    menuThemeSound.play().catch((error) => {
+      console.error("Failed to play menu music:", error);
+    });
+
+    return () => {
+      menuThemeSound.stop();
+    };
+  }, [menuThemeSound]);
 
   useControls({
     keyboard: {

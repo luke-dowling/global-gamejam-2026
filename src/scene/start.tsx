@@ -1,15 +1,42 @@
+import { Html } from "@react-three/drei";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
+import playerSpritesImage from "../assets/player-sprites.png";
 import { useSceneManager } from "../components/scene-manager/use-scene-manager";
 import UIElement from "../components/ui-element";
+import { AudioProvider, usePreloadAudio } from "../hooks/use-audio";
 import { useControls } from "../hooks/use-controls";
 import { useGame } from "../hooks/use-game";
-import playerSpritesImage from "../assets/player-sprites.png";
 
 export default function Start() {
-  const { switchScene } = useSceneManager();
+  const { isLoaded: audioLoaded, audio } = usePreloadAudio();
   const { resetPlayer } = useGame();
+
+  // Reset player health and state when entering the start scene
+  useEffect(() => {
+    resetPlayer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!audioLoaded) {
+    return (
+      <Html center>
+        <div style={{ color: "white", fontSize: "24px" }}>Loading...</div>
+      </Html>
+    );
+  }
+
+  return (
+    <AudioProvider value={audio}>
+      <StartContent />
+    </AudioProvider>
+  );
+}
+
+function StartContent() {
+  const { switchScene } = useSceneManager();
   const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
+  const { resetPlayer } = useGame();
 
   useEffect(() => {
     resetPlayer();

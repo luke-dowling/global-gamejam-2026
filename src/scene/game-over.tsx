@@ -4,14 +4,48 @@ import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
 import { useHighscores } from "../highscore-store";
 import type { SceneName } from "../components/scene-manager";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGame } from "../hooks/use-game";
+import { AudioProvider, usePreloadAudio, useSound } from "../hooks/use-audio";
+import { Html } from "@react-three/drei";
 
 export default function GameOver() {
+  const { isLoaded: audioLoaded, audio } = usePreloadAudio();
+
+  if (!audioLoaded) {
+    return (
+      <Html center>
+        <div style={{ color: "white", fontSize: "24px" }}>Loading...</div>
+      </Html>
+    );
+  }
+
+  return (
+    <AudioProvider value={audio}>
+      <GameOverContent />
+    </AudioProvider>
+  );
+}
+
+function GameOverContent() {
   const { switchScene } = useSceneManager();
   const [hasError, setHasError] = useState(false);
   const [name, setName] = useState("");
   const { playerPoints } = useGame();
+  const gameOverThemeSound = useSound("gameOverTheme");
+
+  useEffect(() => {
+    gameOverThemeSound.setVolume(1);
+    gameOverThemeSound.setLoop(true);
+    gameOverThemeSound.play().catch((error) => {
+      console.error("Failed to play game over music:", error);
+    });
+
+    return () => {
+      gameOverThemeSound.stop();
+    };
+  }, [gameOverThemeSound]);
+
   useControls({
     keyboard: {
       " ": () => handleContinue("highscore"),

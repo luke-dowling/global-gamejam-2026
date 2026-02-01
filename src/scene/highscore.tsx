@@ -7,18 +7,51 @@ import UIElement from "../components/ui-element";
 import { useControls } from "../hooks/use-controls";
 import { useGame } from "../hooks/use-game";
 import { useHighscores } from "../highscore-store";
+import { AudioProvider, usePreloadAudio, useSound } from "../hooks/use-audio";
+import { Html } from "@react-three/drei";
 
 export default function Highscore() {
-  const highscores = useHighscores((s) => s.highscores);
-  const { switchScene } = useSceneManager();
+  const { isLoaded: audioLoaded, audio } = usePreloadAudio();
   const { resetPlayer } = useGame();
-  const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
-  const pressSpaceRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     resetPlayer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!audioLoaded) {
+    return (
+      <Html center>
+        <div style={{ color: "white", fontSize: "24px" }}>Loading...</div>
+      </Html>
+    );
+  }
+
+  return (
+    <AudioProvider value={audio}>
+      <HighscoreContent />
+    </AudioProvider>
+  );
+}
+
+function HighscoreContent() {
+  const highscores = useHighscores((s) => s.highscores);
+  const { switchScene } = useSceneManager();
+  const isTouch = useMediaQuery({ query: "(pointer: coarse)" });
+  const pressSpaceRef = useRef<HTMLParagraphElement>(null);
+  const menuThemeSound = useSound("gameOverTheme");
+
+  useEffect(() => {
+    menuThemeSound.setVolume(1);
+    menuThemeSound.setLoop(true);
+    menuThemeSound.play().catch((error) => {
+      console.error("Failed to play menu music:", error);
+    });
+
+    return () => {
+      menuThemeSound.stop();
+    };
+  }, [menuThemeSound]);
 
   function goToLevelSelect() {
     switchScene("level-select");

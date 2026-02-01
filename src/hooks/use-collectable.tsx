@@ -16,6 +16,7 @@ export function useCollectable({ onCollect, pickupSound }: Props) {
   const { playerPosition } = useGame();
   const hasCollectedRef = useRef(false);
   const audio = useSound(pickupSound);
+  audio.setVolume(0.3);
 
   useFrame(() => {
     if (meshRef.current && !hasCollectedRef.current) {

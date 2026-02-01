@@ -6,7 +6,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import mainTheme from "../assets/audio/main-theme.mp3";
+import covidTheme from "../assets/audio/covid-theme.mp3";
+import elonTheme from "../assets/audio/elon-theme.mp3";
+import strohTheme from "../assets/audio/stroh-theme.mp3";
+import gameOverTheme from "../assets/audio/game-over-theme.mp3";
+import menuTheme from "../assets/audio/menu-theme.mp3";
 import breathe1 from "../assets/audio/effects/breathe1.wav";
 import breathe2 from "../assets/audio/effects/breathe2.wav";
 import breathe3 from "../assets/audio/effects/breathe3.wav";
@@ -16,7 +20,11 @@ import apple from "../assets/audio/effects/apple.wav";
 
 // All game audio files - using actual imports to ensure bundler processes them
 const GAME_AUDIO = {
-  mainTheme,
+  covidTheme,
+  elonTheme,
+  strohTheme,
+  gameOverTheme,
+  menuTheme,
   breathe1,
   breathe2,
   breathe3,

@@ -7,6 +7,8 @@ import { useGame } from "../hooks/use-game";
 import { TexturesProvider, usePreloadTextures } from "../hooks/use-textures";
 import Player from "../player";
 import World from "../world";
+import { useLevelManager } from "../components/level-manager/use-level-manager";
+import type { LevelName } from "../components/level-manager";
 
 export default function Game() {
   const { resetPlayer } = useGame();
@@ -43,19 +45,32 @@ export default function Game() {
 }
 
 function GameContent() {
-  const mainThemeSound = useSound("mainTheme");
+  const { activeLevelName } = useLevelManager();
+
+  // Map level names to their corresponding theme audio keys
+  const levelThemeMap: Record<
+    LevelName,
+    "covidTheme" | "elonTheme" | "strohTheme"
+  > = {
+    covid: "covidTheme",
+    elon: "elonTheme",
+    stroh: "strohTheme",
+  };
+
+  const themeKey = levelThemeMap[activeLevelName];
+  const levelTheme = useSound(themeKey);
 
   useEffect(() => {
-    mainThemeSound.setVolume(0.6);
-    mainThemeSound.setLoop(true);
-    mainThemeSound.play().catch((error) => {
+    levelTheme.setVolume(0.5);
+    levelTheme.setLoop(true);
+    levelTheme.play().catch((error) => {
       console.error("Failed to play background music:", error);
     });
 
     return () => {
-      mainThemeSound.stop();
+      levelTheme.stop();
     };
-  }, [mainThemeSound]);
+  }, [levelTheme, activeLevelName]);
 
   return (
     <>
