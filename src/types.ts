@@ -2,7 +2,8 @@ export interface ObstacleObject {
   position: [number, number];
   size?: readonly [number, number];
 }
-export type ObstacleType = "fence" | "well" | "puddle" | "box" | "rocket" | "satelite" | "corp" | "tesla" ;
+export type ObstacleType = "fence" | "well" | "puddle" | "box" | "rocket" | "satelite" | "corp" | "tesla" | "ball" | "cube" | "pile" | "roll";
+
 export type ObstacleConfig = {
   id: string;
   type: ObstacleType;

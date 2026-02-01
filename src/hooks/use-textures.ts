@@ -22,6 +22,11 @@ import obstacleTesla from "../assets/elon_obstacle_1.png";
 import obstacleRocket from "../assets/elon_obstacle_2.png";
 import obstacleCorp from "../assets/elon_obstacle_3.png";
 import obstacleSatelite from "../assets/elon_obstacle_4.png";
+import obstacleStrawBall from "../assets/straw_obstacle_1.png";
+import obstacleStrawRoll from "../assets/straw_obstacle_2.png";
+import obstacleStrawCube from "../assets/straw_obstacle_3.png";
+import obstacleStrawPile from "../assets/straw_obstacle_4.png";
+
 
 // All game images - using actual imports to ensure bundler processes them
 export const GAME_IMAGES = {
@@ -46,6 +51,10 @@ export const GAME_IMAGES = {
   obstacleCorp,
   obstacleSatelite,
   obstacleTesla,
+  obstacleStrawBall,
+  obstacleStrawCube,
+  obstacleStrawPile,
+  obstacleStrawRoll
 
 };
 
